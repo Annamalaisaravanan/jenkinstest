@@ -4,7 +4,7 @@ pipeline {
         stage('Upload to AWS') {
             steps {
                 withAWS(region: 'ap-south-1', credentials: 'Annamalai') {
-                    bat 'echo "Uploading content with AWS creds"'
+                    
                     dir('https://github.com/Annamalaisaravanan/jenkinstest') {
                         script {
                             def s3Bucket = 'anna-jenkinsupload'

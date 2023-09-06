@@ -14,7 +14,7 @@ pipeline {
         stage('Python Script') {
             steps {
 
-               sh 'pip install mlflow'
+               sh 'pip --version'
                sh 'python3 app.py'
             }
         }

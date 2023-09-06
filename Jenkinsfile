@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        label 'python'
+    }
     triggers {
         githubPush()
     }
@@ -9,9 +11,9 @@ pipeline {
                 echo 'Building..'
             }
         }
-        stage('Test') {
+        stage('Python Script') {
             steps {
-                echo 'Testing..'
+               sh 'python3 app.py'
             }
         }
         stage('Deploy') {

@@ -8,7 +8,7 @@ pipeline {
         stage('Dependencies') {
             steps {
               
-                sh 'sudo -H pip3 install numpy'
+                sh 'pip3 install numpy --user'
             }
         }
         stage('Python Script') {

@@ -1,11 +1,9 @@
 pipeline {
-    agent { docker { image 'ubuntu-latest' } }
+    agent any
     triggers {
         githubPush()
     }
     stages {
-
-        
 
         stage('Build') {
             steps {
@@ -15,7 +13,7 @@ pipeline {
         stage('Python Script') {
             steps {
 
-               sh 'pip --version'
+               
                sh 'python3 app.py'
             }
         }

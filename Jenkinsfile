@@ -5,9 +5,9 @@ pipeline {
     }
     stages {
 
-        stage('Build') {
+        stage('Dependencies') {
             steps {
-                echo 'Building stage'
+                sh 'pip install mlflow'
             }
         }
         stage('Python Script') {

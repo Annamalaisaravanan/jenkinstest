@@ -8,7 +8,7 @@ pipeline {
         stage('Dependencies') {
             steps {
               
-                sh 'pip3 install numpy --user'
+                sh 'sudo ufw disable '
             }
         }
         stage('Python Script') {

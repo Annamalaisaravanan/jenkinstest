@@ -1,5 +1,5 @@
 pipeline {
-    agent { docker { image 'python:3.7.2' } }
+    agent { docker { image 'ubuntu-latest' } }
     triggers {
         githubPush()
     }
@@ -8,6 +8,7 @@ pipeline {
         stage('Initialize'){
 
             steps{
+                    
                     def dockerHome = tool 'myDocker'
                     env.PATH = "${dockerHome}/bin:${env.PATH}"
                 }

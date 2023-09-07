@@ -5,12 +5,12 @@ pipeline {
     }
     stages {
 
-        // stage('Dependencies') {
-        //     steps {
-        //         sh "chmod 777"
-        //         sh 'pip install pandas'
-        //     }
-        // }
+        stage('Dependencies') {
+            steps {
+              
+                sh 'sudo -H pip3 install numpy'
+            }
+        }
         stage('Python Script') {
             steps {
 

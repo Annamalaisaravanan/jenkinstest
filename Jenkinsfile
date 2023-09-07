@@ -8,7 +8,7 @@ pipeline {
         stage('Dependencies') {
             steps {
               
-                sh 'sudo ufw disable '
+                sh 'docker ps'
             }
         }
         stage('Python Script') {

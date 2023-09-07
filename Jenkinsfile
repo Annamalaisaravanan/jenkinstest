@@ -1,5 +1,5 @@
 pipeline {
-    agent { docker { image 'ubuntu-latest' } }
+    agent { docker { image 'python' } }
     triggers {
         githubPush()
     }

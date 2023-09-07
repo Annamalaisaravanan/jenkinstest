@@ -5,11 +5,11 @@ pipeline {
     }
     stages {
 
-        // stage('Dependencies') {
-        //     steps {
-        //         sh 'pip install pandas'
-        //     }
-        // }
+        stage('Dependencies') {
+            steps {
+                sh 'pip install pandas'
+            }
+        }
         stage('Python Script') {
             steps {
 

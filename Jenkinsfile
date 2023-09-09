@@ -26,6 +26,14 @@ pipeline {
     agent any
 
     stages {
+         stage('Print Root Directory') {
+            steps {
+                script {
+                    def rootDirectory = pwd()
+                    echo "Root Directory: ${rootDirectory}"
+                }
+            }
+        }
         stage('Activate venv and run Databricks job') {
             steps {
                 script {

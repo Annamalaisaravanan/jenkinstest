@@ -39,11 +39,11 @@ pipeline {
                 script {
                     // Set the path to your virtual environment
                     
-
+                    sh "cd ~/sample/myenv/bin"
                 
 
                     sh '''#!/bin/bash
-                          source ~/sample/myenv/bin/activate
+                          source activate
                                             
                         '''
 

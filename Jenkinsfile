@@ -30,12 +30,12 @@ pipeline {
             steps {
                 script {
                     // Set the path to your virtual environment
-                    def venvPath = "sample/myenv"
+                    
 
                 
 
                     sh '''#!/bin/bash
-                          source ${venvPath}/bin/activate
+                          source sample/myenv/bin/activate
                                             
                         '''
 

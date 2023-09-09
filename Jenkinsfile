@@ -30,7 +30,7 @@ pipeline {
             steps {
                 script {
                     def rootDirectory = pwd()
-                    echo "Root Directory: ${rootDirectory}"
+                    echo "Root Directory: ${Home}"
                 }
             }
         }
@@ -39,12 +39,11 @@ pipeline {
                 script {
                     // Set the path to your virtual environment
                     
-                    sh "cd ~/sample/myenv/bin"
+                    sh "cd ${HOME}/sample/myenv/bin"
                 
 
                     sh '''#!/bin/bash
-                          source activate
-                                            
+                          source activate                  
                         '''
 
                     // Run your Databricks job command here

@@ -43,7 +43,7 @@ pipeline {
                 
 
                     sh '''#!/bin/bash
-                          source sample/myenv/bin/activate
+                          source ~/sample/myenv/bin/activate
                                             
                         '''
 

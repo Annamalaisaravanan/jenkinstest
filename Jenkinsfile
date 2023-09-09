@@ -32,8 +32,12 @@ pipeline {
                     // Set the path to your virtual environment
                     def venvPath = "sample/myenv"
 
-                    // Activate the virtual environment
-                    sh "source ${venvPath}/bin/activate"
+                
+
+                    sh '''#!/bin/bash
+                          source ${venvPath}/bin/activate
+                                            
+                        '''
 
                     // Run your Databricks job command here
                     sh "pip install plotly"

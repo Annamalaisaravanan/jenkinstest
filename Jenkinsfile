@@ -38,7 +38,7 @@ pipeline {
             steps {
                 script {
                     
-                    
+                    sh "chmod +x -R ${env.WORKSPACE}"
                     sh "cd /home/ubuntu/sample/myenv"
                 
 

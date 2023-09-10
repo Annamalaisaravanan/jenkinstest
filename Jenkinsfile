@@ -39,7 +39,7 @@ pipeline {
                 script {
                     
                     
-                    sh "which python"
+                    sh "ls /usr/local/bin"
                 
 
                     sh '''#!/bin/bash

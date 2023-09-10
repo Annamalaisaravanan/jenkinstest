@@ -38,7 +38,7 @@ pipeline {
             steps {
                 script {
                     
-                    // sh "sudo chmod -R 
+                    // sh 
                     sh "cd /home/ubuntu/sample/myenv"
                 
 

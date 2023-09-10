@@ -39,7 +39,7 @@ pipeline {
                 script {
                     
                     
-                    sh "${WORKSPACE}"
+                    sh "cd /home/ubuntu/sample/myenv"
                 
 
                     // sh '''#!/bin/bash

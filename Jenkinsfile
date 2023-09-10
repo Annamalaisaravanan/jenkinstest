@@ -39,7 +39,7 @@ pipeline {
                 script {
                     
                     
-                    sh "cd sample/myenv/bin"
+                    sh "which python"
                 
 
                     sh '''#!/bin/bash

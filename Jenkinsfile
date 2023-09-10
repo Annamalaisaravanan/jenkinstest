@@ -39,7 +39,7 @@ pipeline {
                 script {
                     // Set the path to your virtual environment
                     
-                    sh "cd ${HOME}/sample/myenv/bin"
+                    sh "cd sample/myenv/bin"
                 
 
                     sh '''#!/bin/bash

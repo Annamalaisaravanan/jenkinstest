@@ -38,7 +38,7 @@ pipeline {
             steps {
                 script {
                     
-                    // sh 
+                    // sh add
                     sh "cd /home/ubuntu/sample/myenv"
                 
 

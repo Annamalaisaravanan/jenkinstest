@@ -23,7 +23,7 @@
 // }
 
 pipeline {
-    agent any
+    agent "EC2"
 
     stages {
          stage('Print Root Directory') {

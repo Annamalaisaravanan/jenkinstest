@@ -37,7 +37,7 @@ pipeline {
         stage('Activate venv and run Databricks job') {
             steps {
                 script {
-                    // Set the path to your virtual environment
+                    
                     
                     sh "cd sample/myenv/bin"
                 

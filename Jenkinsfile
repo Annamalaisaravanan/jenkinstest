@@ -71,6 +71,8 @@ pipeline {
                   steps{
                         script{
                             sh "pip install -r requirements.txt"
+
+                            sh "pip install -U pyopenssl cryptography"
                         }
                   }
         }

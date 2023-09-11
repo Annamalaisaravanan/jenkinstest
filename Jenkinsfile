@@ -23,7 +23,7 @@
 // }
 
 pipeline {
-    agent { label "EC2"}
+    agent { label "python-venv"}
 
     stages {
          stage('Print Root Directory') {

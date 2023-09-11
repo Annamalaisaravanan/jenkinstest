@@ -42,7 +42,7 @@ pipeline {
                     sh "cd /home/ubuntu/sample/myenv/bin/"
                 
 
-                    sh "source activate"
+                    sh "ls"
 
                     // Run your Databricks job command here
                     sh "pip install plotly"

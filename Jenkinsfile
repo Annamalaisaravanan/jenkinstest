@@ -70,7 +70,7 @@ pipeline {
                 host = credentials('DATABRICKS_HOST')
               }
               steps{
-                sh "python app.py"
+                sh "python3 app.py"
               }
         }
 }

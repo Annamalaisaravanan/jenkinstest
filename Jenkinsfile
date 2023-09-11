@@ -39,16 +39,16 @@ pipeline {
                 script {
                     
                     // sh add
-                    sh "cd /home/ubuntu/sample/myenv/bin/"
+                    sh "source /home/ubuntu/sample/myenv/bin/activate"
                 
-
-                    sh "ls"
 
                     // Run your Databricks job command here
                     sh "pip install plotly"
+
+                    sh "pip list"
                     
                     // Deactivate the virtual environment
-                    sh "deactivate"
+                    sh "source /home/ubuntu/sample/myenv/bin/deactivate"
                 }
             }
         }

@@ -43,14 +43,12 @@ pipeline {
                 
 
                     // Run your Databricks job command here
-                    sh "pip install streamlit "
+                    sh "pip install -r requirements.txt"
 
                     sh "pip list"
 
                     sh "deactivate"
                   
-                    
-                   
                 }
             }
         }

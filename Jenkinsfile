@@ -47,7 +47,7 @@ pipeline {
 
                     sh "pip list"
 
-                    sh "deactivate"
+                    sh "python3 app.py"
                   
                 }
             }

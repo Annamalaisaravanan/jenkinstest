@@ -65,40 +65,15 @@ pipeline {
 
     stages {
        
-        
-        stage('Set up Python 3.9') {
-            steps {
-                tool name: 'Python 3.9', type: 'ToolType'
-                script {
-                    def pythonHome = tool name: 'Python 3.9', type: 'ToolType'
-                    env.PATH = "${pythonHome}/bin:${env.PATH}"
-                    sh 'python -m pip install --upgrade pip'
-                }
-            }
+        stage('Hello'){
+              environment {
+                host = credentials('DATABRICKS_HOST')
+              }
+              steps{
+                sh "echo 'My databricks token is $host'"
+              }
         }
+}
 
-        stage('Install dependencies and project in dev mode') {
-            steps {
-                script {
-                    sh 'pip install -e ".[local,test]"'
-                }
-            }
-        }
 
-        stage('Workflow deployment (assets only upload)') {
-            steps {
-                script {
-                    sh 'dbx deploy Hello-world --assets-only'
-                }
-            }
-        }
-
-        stage('Run the workflow in a jobless fashion') {
-            steps {
-                script {
-                    sh 'dbx launch Hello-world --from-assets --trace'
-                }
-            }
-        }
-    }
 }

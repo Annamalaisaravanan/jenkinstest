@@ -64,12 +64,7 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                script {
-                    checkout scm
-                }
-            }
+       
         }
         stage('Set up Python 3.9') {
             steps {

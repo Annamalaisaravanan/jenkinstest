@@ -55,6 +55,8 @@
 //     }
 // }
 
+
+
 pipeline {
     agent any
 
@@ -64,10 +66,18 @@ pipeline {
     }
 
     stages {
-       
-        stage('Hello'){
+
+        stage('Install Requirements'){
+                  steps{
+                        script{
+                            sh "pip install -r requirements.txt"
+                        }
+                  }
+        }
+        stage('Python script'){
               environment {
-                host = credentials('DATABRICKS_HOST')
+                access_key = credentials('AWS_ACCESS_KEY')
+                secret_key = credentials('AWS_SECRET_KEY')
               }
               steps{
                 sh "python3 app.py"

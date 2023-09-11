@@ -59,12 +59,6 @@
 
 pipeline {
     agent any
-
-    environment {
-        DATABRICKS_HOST = credentials('DATABRICKS_HOST')
-        DATABRICKS_TOKEN = credentials('DATABRICKS_TOKEN')
-    }
-
     stages {
 
         stage('Install Requirements'){

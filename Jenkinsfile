@@ -23,7 +23,7 @@
 // }
 
 pipeline {
-    agent { label "python-venv"}
+    agent any
 
     stages {
          stage('Print Root Directory') {

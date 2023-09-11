@@ -70,7 +70,7 @@ pipeline {
                 host = credentials('DATABRICKS_HOST')
               }
               steps{
-                sh "echo 'My databricks token is $host'"
+                sh "python app.py"
               }
         }
 }

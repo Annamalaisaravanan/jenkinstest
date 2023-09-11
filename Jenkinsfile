@@ -43,12 +43,14 @@ pipeline {
                 
 
                     // Run your Databricks job command here
-                    sh "pip install plotly"
+                    sh "pip install streamlit "
 
                     sh "pip list"
+
+                    sh "deactivate"
+                  
                     
-                    // Deactivate the virtual environment
-                    sh "source /home/ubuntu/sample/myenv/bin/deactivate"
+                   
                 }
             }
         }

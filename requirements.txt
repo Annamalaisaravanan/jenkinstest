@@ -3,4 +3,8 @@ plotly
 dbx
 boto3
 mlflow
+databricks
 databricks-sdk
+pyspark==3.2.1
+delta-spark==1.1.0
+scikit-learn==1.2.0

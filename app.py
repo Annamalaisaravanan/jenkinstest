@@ -2,6 +2,8 @@ import os
 import boto3
 from io import BytesIO
 import pandas as pd
+import json
+import requests
 # import mlflow
 # from databricks.sdk import WorkspaceClient
 # from mlflow import MlflowClient
@@ -94,7 +96,7 @@ headers = {
 }
 
 # Make the API request
-response = make_databricks_api_request(host_url, "POST", job_git_config,headers)
+response = make_databricks_api_request(host_url, "POST", json.dumps(job_git_config),headers)
 print(response.status_code)
 print(response.json())
 

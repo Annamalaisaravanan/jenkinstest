@@ -96,7 +96,7 @@ headers = {
 }
 
 # Make the API request
-response = make_databricks_api_request('/api/2.1/jobs/runs/submit', "POST", json.dumps(job_git_config),headers)
+response = make_databricks_api_request('https://dbc-8cbc992c-4f4f.cloud.databricks.com/api/2.1/jobs/runs/submit', "POST", json.dumps(job_git_config),headers)
 print(response)
 
 

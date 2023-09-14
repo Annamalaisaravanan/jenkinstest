@@ -34,8 +34,8 @@ print(host_url)
 
 
 w = WorkspaceClient(
-  host  = 'https://dbc-8cbc992c-4f4f.cloud.databricks.com/',
-  token = 'dapi9d45699b2a258a91a84a67304f2174f0'
+  host  = ,
+  token = 
 )
  
 #host_creds = client()._tracking_client.store.get_host_creds()

@@ -15,6 +15,8 @@ def client():
 host_url = os.environ.get('DATABRICKS_HOST')
 host_token = os.environ.get('DATABRICKS_TOKEN')
 
+print(host_url)
+
 # s3 = boto3.resource("s3",aws_access_key_id=access_key, 
 #                       aws_secret_access_key=secret_key, 
 #                       region_name='ap-south-1')
@@ -32,8 +34,8 @@ host_token = os.environ.get('DATABRICKS_TOKEN')
 
 
 w = WorkspaceClient(
-  host  = host_url,
-  token = host_token
+  host  = 'https://dbc-8cbc992c-4f4f.cloud.databricks.com/',
+  token = 'dapi9d45699b2a258a91a84a67304f2174f0'
 )
  
 host_creds = client()._tracking_client.store.get_host_creds()
@@ -41,7 +43,7 @@ host_creds = client()._tracking_client.store.get_host_creds()
 def call_endpoint(endpoint, method, body='{}'):
   if method == 'GET':
       response = http_request(
-          host_creds=host_creds, endpoint="{}".format(endpoint), method=method, params=json.loads(body))
+           endpoint="{}".format(endpoint), method=method, params=json.loads(body))
   else:
       response = http_request(
           host_creds=host_creds, endpoint="{}".format(endpoint), method=method, 

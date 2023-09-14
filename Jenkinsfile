@@ -70,10 +70,10 @@ pipeline {
                         }
                   }
         }
-        stage('Python script'){
+        stage('Databricks & Python script'){
               environment {
-                access_key = credentials('AWS_ACCESS_KEY')
-                secret_key = credentials('AWS_SECRET_KEY')
+                host = credentials('DATABRICKS_HOST')
+                token = credentials('DATABRCIKS_TOKEN')
               }
               steps{
                 sh "python3 app.py"

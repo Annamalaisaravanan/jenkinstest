@@ -2,3 +2,5 @@ streamlit
 plotly
 dbx
 boto3
+mlflow
+databricks-sdk

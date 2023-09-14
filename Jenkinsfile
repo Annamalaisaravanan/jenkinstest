@@ -73,7 +73,7 @@ pipeline {
         stage('Databricks & Python script'){
               environment {
                 host = credentials('DATABRICKS_HOST')
-                token = credentials('DATABRCIKS_TOKEN')
+                token = credentials('DATABRICKS_TOKEN')
               }
               steps{
                 sh "python3 app.py"

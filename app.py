@@ -13,7 +13,7 @@ def client():
 
 
 host_url = os.environ.get('DATABRICKS_HOST')
-host_token = os.environ.get('DATABRCIKS_TOKEN')
+host_token = os.environ.get('DATABRICKS_TOKEN')
 
 # s3 = boto3.resource("s3",aws_access_key_id=access_key, 
 #                       aws_secret_access_key=secret_key, 

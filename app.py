@@ -38,14 +38,14 @@ w = WorkspaceClient(
   token = host_token
 )
  
-#host_creds = client()._tracking_client.store.get_host_creds()
+host_creds = client()._tracking_client.store.get_host_creds()
 
 def call_endpoint(endpoint, method, body='{}'):
   if method == 'GET':
       response = http_request(
-           endpoint="{}".format(endpoint), method=method, params=json.loads(body))
+          host_creds=host_creds, endpoint="{}".format(endpoint), method=method, params=json.loads(body))
   else:
-      response = http_request(
+      response = http_request( host_creds=host_creds,
           endpoint="{}".format(endpoint), method=method, 
           json=json.loads(body))
   return response.json()

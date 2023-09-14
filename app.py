@@ -30,7 +30,6 @@ host_token = os.environ.get('DATABRCIKS_TOKEN')
 
 # df_input = pd.read_csv(BytesIO(csv_content))
 
-# print(df_input.shape)
 
 w = WorkspaceClient(
   host  = host_url,

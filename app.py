@@ -97,8 +97,8 @@ headers = {
 
 # Make the API request
 response = make_databricks_api_request(host_url, "POST", json.dumps(job_git_config),headers)
-print(response.status_code)
-print(response.json())
+print(response)
+
 
 
 

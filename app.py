@@ -2,54 +2,52 @@ import os
 import boto3
 from io import BytesIO
 import pandas as pd
-import mlflow
-from databricks.sdk import WorkspaceClient
-from mlflow import MlflowClient
+# import mlflow
+# from databricks.sdk import WorkspaceClient
+# from mlflow import MlflowClient
 
-from mlflow.utils.rest_utils import http_request
-import json
-def client():
-  return mlflow.tracking.client.MlflowClient()
+# from mlflow.utils.rest_utils import http_request
+# import json
+# def client():
+#   return mlflow.tracking.client.MlflowClient()
 
 
 host_url = os.environ.get('host')
 host_token = os.environ.get('token')
 
-print(host_url)
-
-# s3 = boto3.resource("s3",aws_access_key_id=access_key, 
-#                       aws_secret_access_key=secret_key, 
-#                       region_name='ap-south-1')
+import requests
+import json
 
 
-# s3_object_key = 'preprocessed/y_test.csv'
 
-# s3_object = s3.Object('mlflow-artifacts-anna', s3_object_key)
-
-# print(s3_object)
-                
-# csv_content = s3_object.get()['Body'].read()
-
-# df_input = pd.read_csv(BytesIO(csv_content))
-
-
-w = WorkspaceClient(
-  host  = host_url,
-  token = host_token
-)
- 
-host_creds = client()._tracking_client.store.get_host_creds()
-
-def call_endpoint(endpoint, method, body='{}'):
-  if method == 'GET':
-      response = http_request(
-          host_creds=host_creds, endpoint="{}".format(endpoint), method=method, params=json.loads(body))
-  else:
-      response = http_request( host_creds=host_creds,
-          endpoint="{}".format(endpoint), method=method, 
-          json=json.loads(body))
-  return response.json()
-
+def make_databricks_api_request(host_url, method, json_data=None, headers=None, params=None):
+   
+    # Construct the full URL for the API request
+    url = f"{host_url}"
+    
+    # Create the request headers (if provided)
+    if headers is None:
+        headers = {}
+    
+    # Create the request parameters (if provided)
+    if params is None:
+        params = {}
+    
+    # Perform the API request based on the HTTP method
+    if method == 'GET':
+        response = requests.get(url, headers=headers, params=params)
+    elif method == 'POST':
+        headers['Content-Type'] = 'application/json'
+        response = requests.post(url, headers=headers, params=params, json=json_data)
+    elif method == 'PUT':
+        headers['Content-Type'] = 'application/json'
+        response = requests.put(url, headers=headers, params=params, json=json_data)
+    elif method == 'DELETE':
+        response = requests.delete(url, headers=headers, params=params)
+    else:
+        raise ValueError("Invalid HTTP method. Supported methods are GET, POST, PUT, and DELETE.")
+    
+    return response
 
 job_git_config = {
   "name": "Table usage",
@@ -91,5 +89,36 @@ job_git_config = {
 },
 }
 
-job_git_response = call_endpoint(f'/api/2.1/jobs/runs/submit', 'POST',json.dumps(job_git_config))
-print(job_git_response)
+headers = {
+    "Authorization": f"Bearer {host_token}"
+}
+
+# Make the API request
+response = make_databricks_api_request(host_url, "POST", job_git_config,headers)
+print(response.status_code)
+print(response.json())
+
+
+
+
+# w = WorkspaceClient(
+#   host  = host_url,
+#   token = host_token
+# )
+ 
+# host_creds = client()._tracking_client.store.get_host_creds()
+
+# def call_endpoint(endpoint, method, body='{}'):
+#   if method == 'GET':
+#       response = http_request(
+#           host_creds=host_creds, endpoint="{}".format(endpoint), method=method, params=json.loads(body))
+#   else:
+#       response = http_request( host_creds=host_creds,
+#           endpoint="{}".format(endpoint), method=method, 
+#           json=json.loads(body))
+#   return response.json()
+
+
+
+# job_git_response = call_endpoint(f'/api/2.1/jobs/runs/submit', 'POST',json.dumps(job_git_config))
+# print(job_git_response)

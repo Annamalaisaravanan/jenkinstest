@@ -40,7 +40,7 @@ def make_databricks_api_request(host_url, method, json_data=None, headers=None, 
         response = requests.get(url, headers=headers, params=params)
     elif method == 'POST':
         headers['Content-Type'] = 'application/json'
-        response = requests.post(url, headers=headers, params=params, json=json_data)
+        response = requests.post(url, headers=headers, params=params, json=json.loads(json_data))
     elif method == 'PUT':
         headers['Content-Type'] = 'application/json'
         response = requests.put(url, headers=headers, params=params, json=json_data)

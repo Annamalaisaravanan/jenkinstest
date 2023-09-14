@@ -12,8 +12,8 @@ def client():
   return mlflow.tracking.client.MlflowClient()
 
 
-host_url = os.environ.get('DATABRICKS_HOST')
-host_token = os.environ.get('DATABRICKS_TOKEN')
+host_url = os.environ.get('host')
+host_token = os.environ.get('token')
 
 print(host_url)
 
@@ -34,8 +34,8 @@ print(host_url)
 
 
 w = WorkspaceClient(
-  host  = ,
-  token = 
+  host  = host_url,
+  token = host_token
 )
  
 #host_creds = client()._tracking_client.store.get_host_creds()

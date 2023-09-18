@@ -38,15 +38,27 @@ headers = {
     "Authorization": f"Bearer {host_token}"
 }
 
-secret_scope_config = {
-            "scope": "anna-scope",
-            "scope_backend_type": "DATABRICKS"
-            }
 
 
+scopes_list =  make_databricks_api_request('https://dbc-da2540cb-9415.cloud.databricks.com/scopes/list', 'GET',json_data=None, headers=headers, params=None)
+print(scopes_list)
+        
+scope_name = []
+for scope in scopes_list['scopes']:
+            scope_name.append(scope['name'])
+            
 
-scope_response = make_databricks_api_request('https://dbc-da2540cb-9415.cloud.databricks.com/api/2.0/secrets/scopes/create', "POST", json.dumps(secret_scope_config),headers)
-print('The scope response is',scope_response)
+if 'anna-scope' not in scope_name:
+           
+           secret_scope_config = {
+                    "scope": "anna-scope",
+                    "scope_backend_type": "DATABRICKS"
+                    }
+           scope_response = make_databricks_api_request('https://dbc-da2540cb-9415.cloud.databricks.com/api/2.0/secrets/scopes/create', "POST", json.dumps(secret_scope_config),headers)
+           print('The scope response is',scope_response)
+
+else:
+         print(" anna-scope is already exist!! ")
 
 secret_config = {
   "scope": "anna-scope",

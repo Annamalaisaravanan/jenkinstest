@@ -57,6 +57,7 @@ headers = {
 
 mlflow_exp_config = {
   "name": "Model-Training",
+  "artifact_location": "dbfs:/Shared/dbx/projects/"
 }
 
 response = make_databricks_api_request('https://dbc-da2540cb-9415.cloud.databricks.com/api/2.0/mlflow/experiments/create', "POST", json.dumps(mlflow_exp_config),headers)

@@ -34,11 +34,18 @@ from sklearn.metrics import f1_score, r2_score, auc, roc_curve
 with open('config.yml', 'r') as file:
     configure = yaml.safe_load(file)
 
+from mlflow.utils.rest_utils import http_request
+import json
+def Client():
+  return mlflow.tracking.MlflowClient()
+
 
 #warnings
 warnings.filterwarnings('ignore')
 
 fs = feature_store.FeatureStoreClient()
+
+host_creds = Client()._tracking_client.store.get_host_creds()
 
 aws_access_key = 'AKIAUJKJ5ZIQGR4MF5V3' #aws_access_key 
 aws_secret_key = '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' #aws_secret_key
@@ -62,6 +69,16 @@ class DataPrep(Task):
             s3.Object(configure['s3']['bucket_name'], s3_object_key).put(Body=csv_content)
 
             return {"df_push_status": 'success'}
+    
+    def mlflow_call_endpoint(self, endpoint, method, body='{}'):
+                if method == 'GET':
+                    response = http_request(
+                        host_creds=host_creds, endpoint="/api/2.0/mlflow/{}".format(endpoint), method=method, params=json.loads(body))
+                else:
+                    response = http_request(
+                        host_creds=host_creds, endpoint="/api/2.0/mlflow/{}".format(endpoint), method=method, 
+                        json=json.loads(body))
+                return response.json()
     
     def load_data(self, table_name, lookup_key,target, inference_data_df):
                     # In the FeatureLookup, if you do not provide the `feature_names` parameter, all features except primary keys are returned
@@ -184,7 +201,35 @@ class DataPrep(Task):
 
                 print("Model training is done")
 
-    
+    def _data_drift(self):
+
+        lists = {
+            "model_name":"pharma_model",
+            "events": "MODEL_VERSION_TRANSITIONED_TO_PRODUCTION"
+        }
+        js_list_res = self.mlflow_call_endpoint('registry-webhooks/list', 'GET', json.dumps(lists))
+
+        if js_list_res:
+              print("Webhook is already created")
+
+        else:
+                diction = {
+                                "job_spec": {
+                                    "job_id": configure['deployment-pipeline']['job_id'],
+                                },
+                                "events": [
+                                    "MODEL_VERSION_TRANSITIONED_TO_PRODUCTION"
+                                ],
+                                "model_name": "pharma_model",
+                                "description": "Webhook for Deployment Pipeline",
+                                "status": "ACTIVE"
+                                }
+
+                job_json= json.dumps(diction)
+                js_res = self.mlflow_call_endpoint('registry-webhooks/create', 'POST', job_json)
+                print(js_res)
+
+                print("Webhook Created for deployment job")
 
     def _preprocess_data(self):
                 
@@ -343,6 +388,7 @@ class DataPrep(Task):
          
          self._preprocess_data()
          self.Model()
+         self._data_drift()
 
    
 

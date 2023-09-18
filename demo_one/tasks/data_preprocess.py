@@ -19,6 +19,8 @@ from mlflow.tracking.client import MlflowClient
 
 from sklearn.model_selection import train_test_split
 
+from sklearn.metrics import accuracy_score, confusion_matrix
+
 from databricks.feature_store import feature_table, FeatureLookup
 
 import os
@@ -110,7 +112,7 @@ class DataPrep(Task):
                                 registered_model_name="pharma_model",
                                 )
     
-    def _train_model(self):
+    def Model(self):
                 
                 spark = SparkSession.builder.appName("CSV Loading Example").getOrCreate()
 
@@ -151,9 +153,33 @@ class DataPrep(Task):
                 
                 self.train_model(X_train, X_val, y_train, y_val, training_set, fs,client)
 
-                self.push_df_to_s3(X_test,configure['preprocessed']['x_test'],aws_access_key,aws_secret_key)
+                rows = X_test.count()[0]
+                random_patient_ids = np.random.randint(10000, 99999, size=rows)
 
-                self.push_df_to_s3(y_test,configure['preprocessed']['y_test'],aws_access_key,aws_secret_key)
+                X_test['PATIENT_ID'] = random_patient_ids
+
+                spark_test = spark.createDataFrame(X_test)
+
+                test_pred = fs.score_batch("models:/pharma_model/latest", spark_test)
+
+                ans_test = test_pred.toPandas()
+
+                y_test = y_test.reset_index()
+
+                y_test.drop('index',axis=1,inplace=True)
+
+                ans_test['actual'] = y_test
+
+                output_df = ans_test[['prediction','actual']]
+
+                print(confusion_matrix(output_df['prediction'],output_df['actual']))
+
+                print(accuracy_score(output_df['prediction'],output_df['actual'])*100)
+
+
+                #self.push_df_to_s3(X_test,configure['preprocessed']['x_test'],aws_access_key,aws_secret_key)
+
+                #self.push_df_to_s3(y_test,configure['preprocessed']['y_test'],aws_access_key,aws_secret_key)
 
 
                 print("Model training is done")
@@ -316,7 +342,7 @@ class DataPrep(Task):
     def launch(self):
          
          self._preprocess_data()
-         self._train_model()
+         self.Model()
 
    
 

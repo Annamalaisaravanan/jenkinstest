@@ -82,6 +82,9 @@ class DataPrep(Task):
                 aws_access_key = 'AKIAUJKJ5ZIQGR4MF5V3' #aws_access_key 
                 aws_secret_key = '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' #aws_secret_key
 
+                access_key = aws_access_key
+                secret_key = aws_secret_key
+
                 print(f"Access key and secret key are {access_key} and {secret_key}")
 
                 
@@ -206,11 +209,11 @@ class DataPrep(Task):
                 
 
                 # online_store_spec = AmazonDynamoDBSpec(
-                #         region="us-west-2",
-                #         write_secret_prefix="feature-store-example-write/dynamo",
-                #         read_secret_prefix="feature-store-example-read/dynamo",
-                #         table_name = configure['feature-store']['online_table_name']
-                #         )
+                # region="us-west-2",
+                # write_secret_prefix="feature-store-example-write/dynamo",
+                # read_secret_prefix="feature-store-example-read/dynamo",
+                # table_name = configure['feature-store']['online_table_name']
+                # )
                 
                 # fs.publish_table(table_name, online_store_spec)
 

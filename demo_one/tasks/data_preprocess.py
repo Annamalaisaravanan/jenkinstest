@@ -81,8 +81,9 @@ class DataPrep(Task):
                         ## fit and log model
                         #x_train = X_train.drop(['PATIENT_ID'],axis=1)
                         #x_test = X_test.drop(['PATIENT_ID'],axis=1)
-                        client.create_experiment(configure['Mlflow']['experiment_name'])
-                        with client.create_run(run_name=configure['Mlflow']['run_name']) as run:
+                        mlflow.set_tracking_uri('databricks')
+                        mlflow.set_experiment(configure['Mlflow']['experiment_name'])
+                        with mlflow.start_run(run_name=configure['Mlflow']['run_name']) as run:
                         
                                 LR_Classifier = LogisticRegression(
                                                         C=configure['LogisticReg']['C'],
@@ -139,7 +140,7 @@ class DataPrep(Task):
                 X_train, X_test, y_train, y_test, X_val, y_val, training_set = self.load_data(configure['feature-store']['table_name'], configure['feature-store']['lookup_key'],configure['features']['target'],inference_data_df)
         
                 client = MlflowClient()
-                
+            
  
                 try:
                      client.delete_registered_model("pharma_model") # Delete the model if already created

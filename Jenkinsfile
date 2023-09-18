@@ -92,6 +92,13 @@ pipeline {
         }
 }
 
+post{
+     failure{
+             sh "python3 remove-scope.py"
+     }
+     
+}
+
 
 }
 

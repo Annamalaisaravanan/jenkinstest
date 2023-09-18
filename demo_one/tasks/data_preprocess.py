@@ -396,8 +396,8 @@ class DataPrep(Task):
 
     def launch(self):
          
-         #self._preprocess_data()
-         #self.Model()
+         self._preprocess_data()
+         self.Model()
          self.webhook()
 
    

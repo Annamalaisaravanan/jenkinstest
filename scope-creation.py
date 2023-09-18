@@ -40,7 +40,6 @@ headers = {
 
 secret_scope_config = {
             "scope": "anna-scope",
-            "initial_manage_principal": "MANAGE",
             "scope_backend_type": "DATABRICKS"
             }
 

@@ -46,7 +46,7 @@ LogisticReg:
 
 
 Mlflow:
-        experiment_name:  "/Shared/dbx/Model-Training"
+        experiment_name:  "Model-Training"
         run_name: "LogisticReg"
         data_drift_exp_name: "/Shared/dbx/Data-Drift-Evaluation-with-Evidently"
 

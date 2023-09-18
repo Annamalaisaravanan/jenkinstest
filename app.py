@@ -51,6 +51,7 @@ def make_databricks_api_request(host_url, method, json_data=None, headers=None, 
     
     return response
 
+
 job_git_config = {
   "name": "Table usage",
   "max_concurrent_runs": 1,

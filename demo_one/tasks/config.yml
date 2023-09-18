@@ -31,7 +31,7 @@ features:
 
 feature-store:
              lookup_key: "PATIENT_ID"
-             table_name: "demo_table11"
+             table_name: "demo_table13"
              online_table_name: "pharma_online_table"
 
 ModelTraining:

@@ -15,6 +15,7 @@ from databricks.feature_store.online_store_spec import AmazonDynamoDBSpec
 import uuid
 
 from databricks import feature_store
+from mlflow.tracking.client import MlflowClient
 
 from sklearn.model_selection import train_test_split
 
@@ -24,6 +25,10 @@ import os
 import datetime
 from pyspark.dbutils import DBUtils
 
+import mlflow
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import f1_score, r2_score, auc, roc_curve
+
 with open('config.yml', 'r') as file:
     configure = yaml.safe_load(file)
 
@@ -31,10 +36,18 @@ with open('config.yml', 'r') as file:
 #warnings
 warnings.filterwarnings('ignore')
 
+fs = feature_store.FeatureStoreClient()
+
+aws_access_key = 'AKIAUJKJ5ZIQGR4MF5V3' #aws_access_key 
+aws_secret_key = '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' #aws_secret_key
+
+access_key = aws_access_key
+secret_key = aws_secret_key
+
 
 class DataPrep(Task):
 
-    def push_df_to_s3(self,df,access_key,secret_key):
+    def push_df_to_s3(self,df,s3_object_key,access_key,secret_key):
             csv_buffer = BytesIO()
             df.to_csv(csv_buffer, index=False)
             csv_content = csv_buffer.getvalue()
@@ -43,31 +56,106 @@ class DataPrep(Task):
                       aws_secret_access_key=secret_key, 
                       region_name='ap-south-1')
 
-            s3_object_key = configure['preprocessed']['preprocessed_df_path'] 
+            
             s3.Object(configure['s3']['bucket_name'], s3_object_key).put(Body=csv_content)
 
             return {"df_push_status": 'success'}
+    
+    def load_data(self, table_name, lookup_key,target, inference_data_df):
+                    # In the FeatureLookup, if you do not provide the `feature_names` parameter, all features except primary keys are returned
+                    model_feature_lookups = [FeatureLookup(table_name=table_name, lookup_key=lookup_key)]
+                
+                    # fs.create_training_set looks up features in model_feature_lookups that match the primary key from inference_data_df
+                    training_set = fs.create_training_set(inference_data_df, model_feature_lookups, label=target,exclude_columns=lookup_key)
+                    training_pd = training_set.load_df().toPandas()
+                
+                    # Create train and test datasets
+                    X = training_pd.drop(target, axis=1)
+                    y = training_pd[target]
+                    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=configure['ModelTraining']['test_split'], random_state=42)
+
+                    X_train_pre, X_val, y_train_pre, y_val = train_test_split(X_train, y_train, test_size=configure['ModelTraining']['validation_split'], random_state=43)
+                    return X_train_pre, X_test, y_train_pre, y_test, X_val, y_val, training_set
+
+    def train_model(self, X_train, X_test, y_train, y_test, training_set, fs):
+                        ## fit and log model
+                        #x_train = X_train.drop(['PATIENT_ID'],axis=1)
+                        #x_test = X_test.drop(['PATIENT_ID'],axis=1)
+                        mlflow.set_experiment(configure['Mlflow']['experiment_name'])
+                        with mlflow.start_run(run_name=configure['Mlflow']['run_name']) as run:
+                        
+                                LR_Classifier = LogisticRegression(
+                                                        C=configure['LogisticReg']['C'],
+                                                        penalty=configure['LogisticReg']['penalty'],
+                                                        solver=configure['LogisticReg']['solver'],
+                                                        class_weight=configure['LogisticReg']['class_weight']
+                                                        )
+                                LR_Classifier.fit(X_train, y_train)
+                                y_pred = LR_Classifier.predict(X_test)
+                        
+                                #mlflow.log_metric("test_mse", mean_squared_error(y_test, y_pred))
+                                #mlflow.log_metric("test_r2_score", r2_score(y_test, y_pred))
+                                fpr, tpr, threshold = roc_curve(y_test,y_pred)
+                                roc_auc = auc(fpr, tpr)
+                                f1_train = f1_score(y_test,y_pred)
+                                mlflow.log_metric("train_f1score",f1_train)
+                                mlflow.log_metric("roc_auc",roc_auc)
+                        
+                                fs.log_model(
+                                model=LR_Classifier,
+                                artifact_path="health_prediction",
+                                flavor=mlflow.sklearn,
+                                training_set=training_set,
+                                registered_model_name="pharma_model",
+                                )
+    
+    def _train_model(self):
+                
+                spark = SparkSession.builder.appName("CSV Loading Example").getOrCreate()
+
+                dbutils = DBUtils(spark)
+
+                
+                s3 = boto3.resource("s3",aws_access_key_id=aws_access_key, 
+                      aws_secret_access_key=aws_secret_key, 
+                      region_name='ap-south-1')
+                
+                bucket_name =  configure['s3']['bucket_name']
+                csv_file_key = configure['preprocessed']['preprocessed_df_path']
+
+                
+                s3_object = s3.Object(bucket_name, csv_file_key)
+                
+                csv_content = s3_object.get()['Body'].read()
+
+                df_input = pd.read_csv(BytesIO(csv_content))
+
+                
+
+                df_input_spark = spark.createDataFrame(df_input)
+
+                inference_data_df = df_input_spark.select(configure['feature-store']['lookup_key'], configure['features']['target'])
+
+                X_train, X_test, y_train, y_test, X_val, y_val, training_set = self.load_data(configure['feature-store']['table_name'], configure['feature-store']['lookup_key'],configure['features']['target'],inference_data_df)
+        
+                client = MlflowClient()
+ 
+                try:
+                     client.delete_registered_model("pharma_model") # Delete the model if already created
+                except:
+                     None
+
+                
+                self.train_model(X_train, X_val, y_train, y_val, training_set, fs)
+
+                self.push_df_to_s3(X_test,configure['preprocessed']['x_test'],aws_access_key,aws_secret_key)
+
+                self.push_df_to_s3(y_test,configure['preprocessed']['y_test'],aws_access_key,aws_secret_key)
+
+
+                print("Model training is done")
 
     
-    
-    # def load_data(self, table_name, lookup_key, inference_data_df):
-    #                 # In the FeatureLookup, if you do not provide the `feature_names` parameter, all features except primary keys are returned
-    #                 model_feature_lookups = [FeatureLookup(table_name=table_name, lookup_key=lookup_key)]
-                
-    #                 # fs.create_training_set looks up features in model_feature_lookups that match the primary key from inference_data_df
-    #                 training_set = fs.create_training_set(inference_data_df, model_feature_lookups, label="Heart_Disease_Yes",exclude_columns="PATIENT_ID")
-    #                 training_pd = training_set.load_df().toPandas()
-                
-    #                 # Create train and test datasets
-    #                 X = training_pd.drop("Heart_Disease_Yes", axis=1)
-    #                 y = training_pd["Heart_Disease_Yes"]
-    #                 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-    #                 X_train_pre, X_val, y_train_pre, y_val = train_test_split(X_train, y_train, test_size=0.1, random_state=43)
-    #                 return X_train_pre, X_test, y_train_pre, y_test, X_val, y_val, training_set
-    #
-                    
-  
 
     def _preprocess_data(self):
                 
@@ -79,11 +167,7 @@ class DataPrep(Task):
                 #aws_secret_key = dbutils.secrets.get(scope="secrets-scope", key="aws-secret-key")
                 
                 
-                aws_access_key = 'AKIAUJKJ5ZIQGR4MF5V3' #aws_access_key 
-                aws_secret_key = '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' #aws_secret_key
-
-                access_key = aws_access_key
-                secret_key = aws_secret_key
+                
 
                 print(f"Access key and secret key are {access_key} and {secret_key}")
 
@@ -182,7 +266,7 @@ class DataPrep(Task):
 
                 df_spark = spark.createDataFrame(df_feature)
 
-                fs = feature_store.FeatureStoreClient()
+                
 
                 fs.create_table(
                         name=table_name,
@@ -192,7 +276,7 @@ class DataPrep(Task):
                         description="health features"
                     )
                 
-                push_status = self.push_df_to_s3(df_input,access_key,secret_key)
+                push_status = self.push_df_to_s3(df_input,configure['preprocessed']['preprocessed_df_path'],access_key,secret_key)
                 print(push_status)
 
                 
@@ -229,6 +313,7 @@ class DataPrep(Task):
     def launch(self):
          
          self._preprocess_data()
+         self._train_model()
 
    
 

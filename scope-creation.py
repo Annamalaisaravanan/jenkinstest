@@ -5,7 +5,7 @@ import json
 
 host_token = os.environ.get('token')
 
-def make_databricks_api_request(host_url, method, json_data=None, headers=None, params=None):
+def make_databricks_api_request(host_url, method, json_data='{}', headers=None, params=None):
    
     # Construct the full URL for the API request
     url = f"{host_url}"
@@ -20,7 +20,7 @@ def make_databricks_api_request(host_url, method, json_data=None, headers=None, 
     
     # Perform the API request based on the HTTP method
     if method == 'GET':
-        response = requests.get(url, headers=headers, params=params)
+        response = requests.get(url, headers=headers, params=json.loads(json_data))
     elif method == 'POST':
         headers['Content-Type'] = 'application/json'
         response = requests.post(url, headers=headers, params=params, json=json.loads(json_data))
@@ -40,7 +40,7 @@ headers = {
 
 
 
-scopes_list =  make_databricks_api_request('https://dbc-da2540cb-9415.cloud.databricks.com/scopes/list', 'GET',json_data=None, headers=headers, params=None)
+scopes_list =  make_databricks_api_request('https://dbc-da2540cb-9415.cloud.databricks.com/scopes/list', 'GET', headers=headers, params=None)
 print(scopes_list)
         
 scope_name = []

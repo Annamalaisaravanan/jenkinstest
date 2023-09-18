@@ -61,7 +61,7 @@ pipeline {
     agent any
     stages {
 
-        stage('Install Requirements'){
+        stage('Install Dependencies'){
                   steps{
                         script{
                             sh "pip install -r requirements.txt"
@@ -71,7 +71,7 @@ pipeline {
                   }
         }
 
-        stage('Scope creation'){
+        stage('Databricks scope creation check'){
              environment {
                    host = credentials('DATABRICKS_HOST')
                    token = credentials('DATABRICKS_TOKEN')
@@ -81,7 +81,7 @@ pipeline {
               sh 'python3 scope-creation.py'
              }
         }
-        stage('Databricks & Python script'){
+        stage('Databricks Pipeline'){
               environment {
                 host = credentials('DATABRICKS_HOST')
                 token = credentials('DATABRICKS_TOKEN')

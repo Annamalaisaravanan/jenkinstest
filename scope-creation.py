@@ -41,7 +41,7 @@ headers = {
 
 
 scopes_list =  make_databricks_api_request('https://dbc-da2540cb-9415.cloud.databricks.com/scopes/list', 'GET', headers=headers, params=None)
-print(scopes_list)
+print(scopes_list.json())
         
 scope_name = []
 for scope in scopes_list['scopes']:

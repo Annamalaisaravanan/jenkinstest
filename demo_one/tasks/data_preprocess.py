@@ -77,12 +77,12 @@ class DataPrep(Task):
                     X_train_pre, X_val, y_train_pre, y_val = train_test_split(X_train, y_train, test_size=configure['ModelTraining']['validation_split'], random_state=43)
                     return X_train_pre, X_test, y_train_pre, y_test, X_val, y_val, training_set
 
-    def train_model(self, X_train, X_test, y_train, y_test, training_set, fs):
+    def train_model(self, X_train, X_test, y_train, y_test, training_set, fs,client):
                         ## fit and log model
                         #x_train = X_train.drop(['PATIENT_ID'],axis=1)
                         #x_test = X_test.drop(['PATIENT_ID'],axis=1)
-                        mlflow.set_experiment(configure['Mlflow']['experiment_name'])
-                        with mlflow.start_run(run_name=configure['Mlflow']['run_name']) as run:
+                        client.set_experiment(configure['Mlflow']['experiment_name'])
+                        with client.start_run(run_name=configure['Mlflow']['run_name']) as run:
                         
                                 LR_Classifier = LogisticRegression(
                                                         C=configure['LogisticReg']['C'],
@@ -139,6 +139,8 @@ class DataPrep(Task):
                 X_train, X_test, y_train, y_test, X_val, y_val, training_set = self.load_data(configure['feature-store']['table_name'], configure['feature-store']['lookup_key'],configure['features']['target'],inference_data_df)
         
                 client = MlflowClient()
+
+                
  
                 try:
                      client.delete_registered_model("pharma_model") # Delete the model if already created
@@ -146,7 +148,7 @@ class DataPrep(Task):
                      None
 
                 
-                self.train_model(X_train, X_val, y_train, y_val, training_set, fs)
+                self.train_model(X_train, X_val, y_train, y_val, training_set, fs,client)
 
                 self.push_df_to_s3(X_test,configure['preprocessed']['x_test'],aws_access_key,aws_secret_key)
 

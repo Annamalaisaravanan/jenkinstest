@@ -14,7 +14,7 @@ import requests
 #   return mlflow.tracking.client.MlflowClient()
 
 
-host_url = os.environ.get('host')
+host = os.environ.get('host')
 host_token = os.environ.get('token')
 
 import requests
@@ -70,14 +70,25 @@ job_git_config = {
         "num_workers": 1
       },
       "spark_python_task": {
-        "python_file": "demo_project/tasks/app.py",
+        "python_file": "demo_one/tasks/data_preprocess.py",
         "source": "GIT",
       },
       "libraries": [
           {
          "pypi": {
             "package": "mlflow",
-            "package": "databricks-sdk"
+            "package": "databricks-sdk",
+            "package": "mlflow",
+            "package": "databricks-sdk",
+            "package": "pyspark==3.2.1",
+            "package": "boto3",
+            "package": "delta-spark==1.1.0",
+            "package": "scikit-learn==1.2.0",
+            "package": "databricks-feature-store",
+            "package": "evidently",
+            "package": "pandas==1.5.3",
+            "package": "mlflow",
+            "package": "urllib3"
           },}
       ],
       "timeout_seconds": 0
@@ -85,9 +96,9 @@ job_git_config = {
   ],
   "format": "SINGLE_TASK",
   "git_source": {
-"git_url": "https://github.com/Annamalaisaravanan/pharma-pipeline.git",
+"git_url": "https://github.com/Annamalaisaravanan/jenkinstest.git",
 "git_provider": "gitHub",
-"git_branch": "feature-store",
+"git_branch": "main",
 },
 }
 

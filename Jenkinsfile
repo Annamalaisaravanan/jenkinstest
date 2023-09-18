@@ -74,6 +74,8 @@ pipeline {
               environment {
                 host = credentials('DATABRICKS_HOST')
                 token = credentials('DATABRICKS_TOKEN')
+                s3_access = credentials('MY_AWS_ACCESS_KEY')
+                s3_secret = credentials('MY_AWS_SECRET_KEY')
               }
               steps{
                 sh "python3 app.py"

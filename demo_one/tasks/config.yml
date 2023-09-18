@@ -1,0 +1,57 @@
+s3: 
+    bucket_name: "mlflow-artifacts-anna"
+    file_path: "CVD_cleaned.csv"
+
+dbfs:
+     mount_name: "/mnt/mount_s3"
+     file_name:  '/mnt/mount_s3/CVD_cleaned.csv'
+
+preprocessed:
+           preprocessed_df_path: 'preprocessed/preprocessed_df.csv' 
+           x_test: 'preprocessed/x_test.csv'
+           y_test: 'preprocessed/y_test.csv'
+           encoders_path: 'preprocessed/encoders.pkl'
+
+results:
+        metrics_path: 'results/metrics_comparison.csv'
+
+features:
+         numerical_cols: ["Height_(cm)", "Weight_(kg)", "BMI", "Alcohol_Consumption",
+                          "Fruit_Consumption", "Green_Vegetables_Consumption", "FriedPotato_Consumption"]
+
+         categorical_cols: ["General_Health", "Checkup", "Exercise", "Heart_Disease", "Skin_Cancer",
+                    "Other_Cancer", "Depression", "Diabetes", "Arthritis", "Sex", "Age_Category", "Smoking_History"]
+
+         ordinal_cols: ['General_Health', 'Checkup', 'Age_Category']
+
+         onehot_cols:  ['Exercise', 'Heart_Disease', 'Skin_Cancer', 'Other_Cancer', 'Depression',
+                            'Diabetes', 'Arthritis', 'Sex', 'Smoking_History']
+
+         target: "Heart_Disease_Yes"
+
+feature-store:
+             lookup_key: "PATIENT_ID"
+             table_name: "demo_table3"
+             online_table_name: "pharma_online_table"
+
+ModelTraining:
+            test_split: 0.3
+            validation_split: 0.1
+
+LogisticReg:
+          C: 0.20
+          penalty: 'l2'
+          solver: 'newton-cg'
+          class_weight: 'balanced'
+
+
+Mlflow:
+        experiment_name:  "/Shared/dbx/Model-Training"
+        run_name: "LogisticReg"
+        data_drift_exp_name: "/Shared/dbx/Data-Drift-Evaluation-with-Evidently"
+
+
+deployment-pipeline:
+             job_id: 299086715545628
+
+ 

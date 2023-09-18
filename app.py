@@ -51,6 +51,17 @@ def make_databricks_api_request(host_url, method, json_data=None, headers=None, 
     
     return response
 
+headers = {
+    "Authorization": f"Bearer {host_token}"
+}
+
+mlflow_exp_config = {
+  "name": "Model-Training",
+}
+
+response = make_databricks_api_request('https://dbc-da2540cb-9415.cloud.databricks.com/api/2.0/mlflow/experiments/create', "POST", json.dumps(mlflow_exp_config),headers)
+print("Mlflow exp response is ",response)
+
 
 job_git_config = {
   "name": "Table usage",
@@ -103,9 +114,7 @@ job_git_config = {
 },
 }
 
-headers = {
-    "Authorization": f"Bearer {host_token}"
-}
+
 
 # Make the API request
 response = make_databricks_api_request('https://dbc-da2540cb-9415.cloud.databricks.com/api/2.1/jobs/runs/submit', "POST", json.dumps(job_git_config),headers)

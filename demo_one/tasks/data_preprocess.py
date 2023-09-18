@@ -47,6 +47,8 @@ fs = feature_store.FeatureStoreClient()
 
 host_creds = Client()._tracking_client.store.get_host_creds()
 
+
+
 aws_access_key = 'AKIAUJKJ5ZIQGR4MF5V3' #aws_access_key 
 aws_secret_key = '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' #aws_secret_key
 
@@ -201,7 +203,13 @@ class DataPrep(Task):
 
                 print("Model training is done")
 
-    def _data_drift(self):
+    def webhook(self):
+
+        spark = SparkSession.builder.appName("CSV Loading Example").getOrCreate()
+
+        dbutils = DBUtils(spark)
+
+        db_token = dbutils.secrets.get(scope="my-secret-scope", key="databricks-token")
 
         lists = {
             "model_name":"pharma_model",
@@ -216,6 +224,8 @@ class DataPrep(Task):
                 diction = {
                                 "job_spec": {
                                     "job_id": configure['deployment-pipeline']['job_id'],
+                                    "access_token": db_token,
+                                    "workspace_url": 'https://dbc-da2540cb-9415.cloud.databricks.com/'
                                 },
                                 "events": [
                                     "MODEL_VERSION_TRANSITIONED_TO_PRODUCTION"
@@ -386,9 +396,9 @@ class DataPrep(Task):
 
     def launch(self):
          
-         self._preprocess_data()
-         self.Model()
-         self._data_drift()
+         #self._preprocess_data()
+         #self.Model()
+         self.webhook()
 
    
 

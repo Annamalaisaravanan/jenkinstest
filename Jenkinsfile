@@ -70,12 +70,21 @@ pipeline {
                         }
                   }
         }
+
+        stage('Scope creation'){
+             environment {
+                   host = credentials('DATABRICKS_HOST')
+                   token = credentials('DATABRICKS_TOKEN')
+             }
+
+             steps{
+              sh 'python3 scope-creation.py'
+             }
+        }
         stage('Databricks & Python script'){
               environment {
                 host = credentials('DATABRICKS_HOST')
                 token = credentials('DATABRICKS_TOKEN')
-                s3_access = credentials('MY_AWS_ACCESS_KEY')
-                s3_secret = credentials('MY_AWS_SECRET_KEY')
               }
               steps{
                 sh "python3 app.py"

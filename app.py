@@ -56,7 +56,7 @@ headers = {
 }
 
 mlflow_exp_config = {
-  "name": "Model-Training",
+  "name": "ModelTraining",
   "artifact_location": "dbfs:/Shared/dbx/projects/"
 }
 

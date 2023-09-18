@@ -39,8 +39,9 @@ headers = {
 }
 
 
+session = requests.Session()
 
-scopes_list =  requests.get('https://dbc-da2540cb-9415.cloud.databricks.com/scopes/list', 'GET',headers=headers)
+scopes_list =  session.get('https://dbc-da2540cb-9415.cloud.databricks.com/scopes/list', 'GET',headers=headers)
 print(scopes_list)
         
 scope_name = []

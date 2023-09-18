@@ -41,7 +41,7 @@ headers = {
 
 session = requests.Session()
 
-scopes_list =  session.get('https://dbc-da2540cb-9415.cloud.databricks.com/scopes/list',headers=headers)
+scopes_list =  session.get('https://dbc-da2540cb-9415.cloud.databricks.com/api/2.0/secrets/scopes/list',headers=headers)
 print(scopes_list)
         
 scope_name = []

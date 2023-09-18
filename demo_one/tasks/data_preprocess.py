@@ -209,7 +209,7 @@ class DataPrep(Task):
 
         dbutils = DBUtils(spark)
 
-        db_token = dbutils.secrets.get(scope="my-secret-scope", key="databricks-token")
+        db_token = dbutils.secrets.get(scope="anna-scope", key="databricks-token")
 
         lists = {
             "model_name":"pharma_model",

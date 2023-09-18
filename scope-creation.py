@@ -39,7 +39,7 @@ headers = {
 }
 
 secret_scope_config = {
-            "scope": "my-secret-scope",
+            "scope": "anna-scope",
             "initial_manage_principal": "MANAGE",
             "scope_backend_type": "DATABRICKS"
             }
@@ -50,7 +50,7 @@ scope_response = make_databricks_api_request('https://dbc-da2540cb-9415.cloud.da
 print('The scope response is',scope_response)
 
 secret_config = {
-  "scope": "my-secret-scope",
+  "scope": "anna-scope",
   "key": "databricks-token",
   "string_value": host_token,
 }

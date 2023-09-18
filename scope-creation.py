@@ -42,10 +42,10 @@ headers = {
 session = requests.Session()
 
 scopes_list =  session.get('https://dbc-da2540cb-9415.cloud.databricks.com/api/2.0/secrets/scopes/list',headers=headers)
-print(scopes_list.response)
-        
+print(scopes_list.text)
+json_text = scopes_list.text
 scope_name = []
-for scope in scopes_list['scopes']:
+for scope in json_text['scopes']:
             scope_name.append(scope['name'])
             
 

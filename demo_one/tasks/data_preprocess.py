@@ -81,7 +81,7 @@ class DataPrep(Task):
                         ## fit and log model
                         #x_train = X_train.drop(['PATIENT_ID'],axis=1)
                         #x_test = X_test.drop(['PATIENT_ID'],axis=1)
-                        client.set_experiment(configure['Mlflow']['experiment_name'])
+                        client.create_experiment(configure['Mlflow']['experiment_name'])
                         with client.start_run(run_name=configure['Mlflow']['run_name']) as run:
                         
                                 LR_Classifier = LogisticRegression(
@@ -147,6 +147,7 @@ class DataPrep(Task):
                 except:
                      None
 
+                
                 
                 self.train_model(X_train, X_val, y_train, y_val, training_set, fs,client)
 

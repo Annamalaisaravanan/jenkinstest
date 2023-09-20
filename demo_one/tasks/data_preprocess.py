@@ -232,6 +232,7 @@ class DataPrep(Task):
         }
         js_list_res = self.mlflow_call_endpoint('registry-webhooks/list', 'GET', json.dumps(lists))
 
+        print(js_list_res)
         if js_list_res:
               print("Webhook is already created")
 

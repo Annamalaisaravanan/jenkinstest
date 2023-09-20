@@ -150,24 +150,24 @@ class DataPrep(Task):
                                 registered_model_name=configure['Model_registry_name'],
                                 )
     
-    def Model(self):
+    def Model(self,df_input):
                 
                 
 
                 
-                s3 = boto3.resource("s3",aws_access_key_id=aws_access_key, 
-                      aws_secret_access_key=aws_secret_key, 
-                      region_name='ap-south-1')
+                # s3 = boto3.resource("s3",aws_access_key_id=aws_access_key, 
+                #       aws_secret_access_key=aws_secret_key, 
+                #       region_name='ap-south-1')
                 
-                bucket_name =  configure['s3']['bucket_name']
-                csv_file_key = configure['preprocessed']['preprocessed_df_path']
+                # bucket_name =  configure['s3']['bucket_name']
+                # csv_file_key = configure['preprocessed']['preprocessed_df_path']
 
                 
-                s3_object = s3.Object(bucket_name, csv_file_key)
+                # s3_object = s3.Object(bucket_name, csv_file_key)
                 
-                csv_content = s3_object.get()['Body'].read()
+                # csv_content = s3_object.get()['Body'].read()
 
-                df_input = pd.read_csv(BytesIO(csv_content))
+                # df_input = pd.read_csv(BytesIO(csv_content))
 
                 
 
@@ -375,8 +375,11 @@ class DataPrep(Task):
                         description="health features"
                     )
                 
-                push_status = self.push_df_to_s3(df_input,configure['preprocessed']['preprocessed_df_path'],access_key,secret_key)
-                print(push_status)
+
+               
+                
+                #push_status = self.push_df_to_s3(df_input,configure['preprocessed']['preprocessed_df_path'],access_key,secret_key)
+                #print(push_status)
 
                 
 
@@ -389,6 +392,7 @@ class DataPrep(Task):
 
                 print("Feature Store is created")
 
+                return df_input
                 
 
                 # online_store_spec = AmazonDynamoDBSpec(
@@ -411,8 +415,8 @@ class DataPrep(Task):
 
     def launch(self):
          
-         self._preprocess_data()
-         self.Model()
+        processed_data =  self._preprocess_data()
+        self.Model(processed_data)
          self.webhook()
 
    

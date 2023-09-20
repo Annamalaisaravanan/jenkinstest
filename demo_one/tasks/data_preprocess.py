@@ -31,6 +31,22 @@ import mlflow
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import f1_score, r2_score, auc, roc_curve
 
+import random
+import string
+
+def random_string(base_string):
+       
+
+        # Generate a random number (assuming you want a 6-digit number)
+        random_number = ''.join(random.choices(string.digits, k=6))
+
+        result_string = base_string + "_" + random_number
+
+        return result_string
+
+
+
+
 with open('config.yml', 'r') as file:
     configure = yaml.safe_load(file)
 
@@ -102,12 +118,12 @@ class DataPrep(Task):
                     return X_train_pre, X_test, y_train_pre, y_test, X_val, y_val, training_set
 
     def train_model(self, X_train, X_test, y_train, y_test, training_set, fs,client):
-                        ## fit and log model
-                        #x_train = X_train.drop(['PATIENT_ID'],axis=1)
-                        #x_test = X_test.drop(['PATIENT_ID'],axis=1)
+                        
+                        exp_run_name = random_string(configure['Mlflow']['run_name'])
+
                         mlflow.set_tracking_uri('databricks')
                         mlflow.set_experiment(configure['Mlflow']['experiment_name'])
-                        with mlflow.start_run(run_name=configure['Mlflow']['run_name']) as run:
+                        with mlflow.start_run(run_name= exp_run_name) as run:
                         
                                 LR_Classifier = LogisticRegression(
                                                         C=configure['LogisticReg']['C'],
@@ -224,7 +240,7 @@ class DataPrep(Task):
                                 "job_spec": {
                                     "job_id": configure['deployment-pipeline']['job_id'],
                                     "access_token": db_token,
-                                    "workspace_url": 'https://dbc-da2540cb-9415.cloud.databricks.com/'
+                                    "workspace_url": configure['databricks-url']
                                 },
                                 "events": [
                                     "MODEL_VERSION_TRANSITIONED_TO_PRODUCTION"

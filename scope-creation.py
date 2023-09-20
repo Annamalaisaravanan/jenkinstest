@@ -49,8 +49,9 @@ headers = {
 session = requests.Session()
 
 scopes_list =  session.get(f"{db_yml['databricks_host']}/api/2.0/secrets/scopes/list",headers=headers)
-print(type(scopes_list.text))
+print(db_yml['databricks_host'])
 json_text = json.loads(scopes_list.text)
+print(json_text)
 scope_name = []
 for scope in json_text['scopes']:
             scope_name.append(scope['name'])

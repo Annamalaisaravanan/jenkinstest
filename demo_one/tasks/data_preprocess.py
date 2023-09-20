@@ -56,7 +56,7 @@ def Client():
   return mlflow.tracking.MlflowClient()
 
 
-#warnings
+
 warnings.filterwarnings('ignore')
 
 fs = feature_store.FeatureStoreClient()
@@ -180,10 +180,10 @@ class DataPrep(Task):
                 client = MlflowClient()
             
  
-                try:
-                     client.delete_registered_model(configure['Model_registry_name']) # Delete the model if already created
-                except:
-                     None
+                # try:
+                #      client.delete_registered_model(configure['Model_registry_name']) # Delete the model if already created
+                # except:
+                #      None
 
                 
                 

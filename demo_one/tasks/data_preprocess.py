@@ -121,7 +121,7 @@ class DataPrep(Task):
                         
                         exp_run_name = random_string(configure['Mlflow']['run_name'])
 
-                        mlflow.set_tracking_uri('databricks')
+                        
                         mlflow.set_experiment(configure['Mlflow']['experiment_name'])
                         with mlflow.start_run(run_name= exp_run_name) as run:
                         

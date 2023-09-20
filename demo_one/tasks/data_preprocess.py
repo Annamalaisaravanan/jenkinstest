@@ -249,6 +249,7 @@ class DataPrep(Task):
                 print("Feature store is already there")
                 
         except:
+                print("Hiii changes detected")
                 print(f"Access key and secret key are {access_key} and {secret_key}")
 
                 
@@ -338,6 +339,7 @@ class DataPrep(Task):
 
 
                 spark.sql(f"CREATE DATABASE IF NOT EXISTS {configure['feature-store']['DB']}")
+                print('pharma db created')
                 # Create a unique table name for each run. This prevents errors if you run the notebook multiple times.
                 table_name = configure['feature-store']['table_name']
                 print(table_name)

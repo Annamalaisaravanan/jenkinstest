@@ -241,14 +241,14 @@ class DataPrep(Task):
                 print("Webhook Created for deployment job")
 
     def _preprocess_data(self):
-                
-                
 
-                
-                
-                
-                
 
+        try:
+                
+                fs.get_table(f"{self.conf['feature-store']['table_name']}")
+                print("Feature store is already there")
+                
+        except:
                 print(f"Access key and secret key are {access_key} and {secret_key}")
 
                 

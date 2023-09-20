@@ -73,7 +73,7 @@ class DataPrep(Task):
             
             s3.Object(configure['s3']['bucket_name'], s3_object_key).put(Body=csv_content)
 
-            return {"df_push_status": 'success'}
+            return {"df_push_status": 'successs'}
     
     def mlflow_call_endpoint(self, endpoint, method, body='{}'):
                 if method == 'GET':

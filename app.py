@@ -11,7 +11,7 @@ with open('databricks-config.yml', 'r') as file:
     db_yml = yaml.safe_load(file)
 
 
-host = os.environ.get('host')
+#host = os.environ.get('host')
 host_token = os.environ.get('token')
 
 

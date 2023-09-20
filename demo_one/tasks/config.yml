@@ -31,7 +31,7 @@ features:
 
 feature-store:
              lookup_key: "PATIENT_ID"
-             table_name: "demo_table13"
+             table_name: "pharma.demo_table13"
              online_table_name: "pharma_online_table"
 
 ModelTraining:
@@ -46,9 +46,11 @@ LogisticReg:
 
 
 Mlflow:
-        experiment_name:  "/Shared/dbx/usecase3"
+        experiment_name:  "/Shared/dbx/pharma_experiment"
         run_name: "LogisticReg"
         data_drift_exp_name: "/Shared/dbx/Data-Drift-Evaluation-with-Evidently"
+
+Model_registry_name: 'pharma_model'
 
 
 deployment-pipeline:

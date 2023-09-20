@@ -131,7 +131,7 @@ class DataPrep(Task):
                                 artifact_path="health_prediction",
                                 flavor=mlflow.sklearn,
                                 training_set=training_set,
-                                registered_model_name="pharma_model",
+                                registered_model_name=configure['Model_registry_name'],
                                 )
     
     def Model(self):
@@ -165,7 +165,7 @@ class DataPrep(Task):
             
  
                 try:
-                     client.delete_registered_model("pharma_model") # Delete the model if already created
+                     client.delete_registered_model(configure['Model_registry_name']) # Delete the model if already created
                 except:
                      None
 
@@ -243,12 +243,12 @@ class DataPrep(Task):
     def _preprocess_data(self):
 
 
-        #try:
+        try:
                 
-                fs.get_table(f"{self.conf['feature-store']['table_name']}")
+                fs.get_table(f"{configure['feature-store']['table_name']}")
                 print("Feature store is already there")
                 
-        #except:
+        except:
                 print(f"Access key and secret key are {access_key} and {secret_key}")
 
                 

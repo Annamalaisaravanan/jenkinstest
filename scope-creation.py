@@ -83,6 +83,10 @@ aws_secret1_config = {
   "string_value": aws_access,
 }
 
+aws_access_response = make_databricks_api_request(f"{db_yml['databricks_host']}/api/2.0/secrets/put", "POST", json.dumps(aws_secret1_config),headers)
+print('The access scope response is',aws_access_response)
+
+
 aws_secret2_config = {
   "scope": "anna-scope",
   "key": "aws_secret_key",
@@ -91,5 +95,5 @@ aws_secret2_config = {
 
 
 
-aws_secret_response = make_databricks_api_request(f"{db_yml['databricks_host']}/api/2.0/secrets/put", "POST", json.dumps(secret_config),headers)
-print('The scope response is',aws_secret_response)
+aws_secret_response = make_databricks_api_request(f"{db_yml['databricks_host']}/api/2.0/secrets/put", "POST", json.dumps(aws_secret2_config),headers)
+print('The secret scope response is',aws_secret_response)

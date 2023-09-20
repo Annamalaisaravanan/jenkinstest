@@ -40,9 +40,9 @@ ModelTraining:
             validation_split: 0.1
 
 LogisticReg:
-          C: 0.20
-          penalty: 'l2'
-          solver: 'newton-cg'
+          C: 0.80
+          penalty: 'l1'
+          solver: 'liblinear'
           class_weight: 'balanced'
 
 

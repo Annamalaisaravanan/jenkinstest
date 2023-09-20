@@ -47,10 +47,13 @@ fs = feature_store.FeatureStoreClient()
 
 host_creds = Client()._tracking_client.store.get_host_creds()
 
+spark = SparkSession.builder.appName("CSV Loading Example").getOrCreate()
 
+dbutils = DBUtils(spark)
 
-aws_access_key = 'AKIAUJKJ5ZIQGR4MF5V3' #aws_access_key 
-aws_secret_key = 'WYBtcoIIZvMZOlcQsnViIz5XOPLHP3eKai3Jxx5A' #aws_secret_key
+aws_access_key = dbutils.secrets.get(scope="anna-scope", key="aws_access_key")
+aws_secret_key = dbutils.secrets.get(scope="anna-scope", key="aws_secret_key")
+
 
 access_key = aws_access_key
 secret_key = aws_secret_key
@@ -133,9 +136,7 @@ class DataPrep(Task):
     
     def Model(self):
                 
-                spark = SparkSession.builder.appName("CSV Loading Example").getOrCreate()
-
-                dbutils = DBUtils(spark)
+                
 
                 
                 s3 = boto3.resource("s3",aws_access_key_id=aws_access_key, 
@@ -205,9 +206,7 @@ class DataPrep(Task):
 
     def webhook(self):
 
-        spark = SparkSession.builder.appName("CSV Loading Example").getOrCreate()
-
-        dbutils = DBUtils(spark)
+        
 
         db_token = dbutils.secrets.get(scope="anna-scope", key="databricks-token")
 
@@ -243,12 +242,9 @@ class DataPrep(Task):
 
     def _preprocess_data(self):
                 
-                spark = SparkSession.builder.appName("CSV Loading Example").getOrCreate()
+                
 
-                dbutils = DBUtils(spark)
-
-                #aws_access_key = dbutils.secrets.get(scope="secrets-scope", key="aws-access-key")
-                #aws_secret_key = dbutils.secrets.get(scope="secrets-scope", key="aws-secret-key")
+                
                 
                 
                 

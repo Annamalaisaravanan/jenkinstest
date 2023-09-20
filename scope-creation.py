@@ -2,8 +2,15 @@ import os
 import requests
 import json
 
+import yaml
+
+with open('databricks-config.yml', 'r') as file:
+    db_yml = yaml.safe_load(file)
+
 
 host_token = os.environ.get('token')
+aws_access = os.environ.get('aws_access_key')
+aws_secret = os.environ.get('aws_secret_key')
 
 def make_databricks_api_request(host_url, method, json_data='{}', headers=None, params=None):
    
@@ -41,7 +48,7 @@ headers = {
 
 session = requests.Session()
 
-scopes_list =  session.get('https://dbc-da2540cb-9415.cloud.databricks.com/api/2.0/secrets/scopes/list',headers=headers)
+scopes_list =  session.get(f"{db_yml['databricks_host']}/api/2.0/secrets/scopes/list",headers=headers)
 print(type(scopes_list.text))
 json_text = json.loads(scopes_list.text)
 scope_name = []
@@ -54,7 +61,7 @@ if 'anna-scope' not in scope_name:
                 "scope": "anna-scope",
                 "scope_backend_type": "DATABRICKS"
                 }
-            scope_response = make_databricks_api_request('https://dbc-da2540cb-9415.cloud.databricks.com/api/2.0/secrets/scopes/create', "POST", json.dumps(secret_scope_config),headers)
+            scope_response = make_databricks_api_request(f"{db_yml['databricks_host']}/api/2.0/secrets/scopes/create", "POST", json.dumps(secret_scope_config),headers)
             print('The scope response is',scope_response)
 
 else:
@@ -66,5 +73,22 @@ secret_config = {
   "string_value": host_token,
 }
 
-secret_response = make_databricks_api_request('https://dbc-da2540cb-9415.cloud.databricks.com/api/2.0/secrets/put', "POST", json.dumps(secret_config),headers)
+secret_response = make_databricks_api_request(f"{db_yml['databricks_host']}/api/2.0/secrets/put", "POST", json.dumps(secret_config),headers)
 print('The scope response is',secret_response)
+
+aws_secret1_config = {
+  "scope": "anna-scope",
+  "key": "aws_access_key",
+  "string_value": aws_access,
+}
+
+aws_secret2_config = {
+  "scope": "anna-scope",
+  "key": "aws_secret_key",
+  "string_value": aws_secret,
+}
+
+
+
+aws_secret_response = make_databricks_api_request(f"{db_yml['databricks_host']}/api/2.0/secrets/put", "POST", json.dumps(secret_config),headers)
+print('The scope response is',aws_secret_response)

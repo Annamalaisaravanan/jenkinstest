@@ -4,21 +4,16 @@ from io import BytesIO
 import pandas as pd
 import json
 import requests
-# import mlflow
-# from databricks.sdk import WorkspaceClient
-# from mlflow import MlflowClient
 
-# from mlflow.utils.rest_utils import http_request
-# import json
-# def client():
-#   return mlflow.tracking.client.MlflowClient()
+import yaml
+
+with open('databricks-config.yml', 'r') as file:
+    db_yml = yaml.safe_load(file)
 
 
 host = os.environ.get('host')
 host_token = os.environ.get('token')
 
-import requests
-import json
 
 
 
@@ -118,7 +113,7 @@ job_git_config = {
 
 
 # Make the API request
-response = make_databricks_api_request('https://dbc-da2540cb-9415.cloud.databricks.com/api/2.1/jobs/runs/submit', "POST", json.dumps(job_git_config),headers)
+response = make_databricks_api_request(f"{db_yml['databricks_host']}/api/2.1/jobs/runs/submit", "POST", json.dumps(job_git_config),headers)
 print(response)
 
 

@@ -262,8 +262,13 @@ class DataPrep(Task):
 
         try:
                 
-                fs.get_table(f"{configure['feature-store']['table_name']}")
+                #fs.get_table(f"{configure['feature-store']['table_name']}")
+                
+                feature_df = fs.read_table(configure['feature-store']['table_name'])
+                new_df = feature_df.toPandas()
                 print("Feature store is already there")
+                return new_df
+
                 
         except:
                 print("Hiii changes detected")

@@ -305,7 +305,9 @@ class DataPrep(Task):
 
                 df_input = pd.read_csv(BytesIO(csv_content))
 
-                print('df_input')     
+                print('df_input')    
+
+                return df_input 
         except:
                 print("Hiii changes detected")
                 print(f"Access key and secret key are {access_key} and {secret_key}")

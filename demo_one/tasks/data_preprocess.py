@@ -263,8 +263,9 @@ class DataPrep(Task):
         try:
                 
                 #fs.get_table(f"{configure['feature-store']['table_name']}")
-                
+                print("reading feature store")
                 new_df = fs.read_table(configure['feature-store']['table_name'])
+                print("new_df read from feature store")
                 # feature_df = new_df.toPandas()
                 # print("Feature store is already there")
 
@@ -303,7 +304,7 @@ class DataPrep(Task):
                 print("Hiii changes detected")
                 print(f"Access key and secret key are {access_key} and {secret_key}")
 
-                
+            
                 
                 encoded_secret_key = urllib.parse.quote(secret_key,safe="")
 

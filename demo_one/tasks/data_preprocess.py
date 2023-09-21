@@ -264,11 +264,40 @@ class DataPrep(Task):
                 
                 #fs.get_table(f"{configure['feature-store']['table_name']}")
                 
-                feature_df = fs.read_table(configure['feature-store']['table_name'])
-                new_df = feature_df.toPandas()
-                print("Feature store is already there")
-                return new_df
+                new_df = fs.read_table(configure['feature-store']['table_name'])
+                # feature_df = new_df.toPandas()
+                # print("Feature store is already there")
 
+                # s3 = boto3.resource("s3",aws_access_key_id=aws_access_key, 
+                #       aws_secret_access_key=aws_secret_key, 
+                #       region_name='ap-south-1')
+                
+                # bucket_name =  configure['s3']['bucket_name']
+                # csv_file_key = configure['s3']['file_path']
+
+                # s3_object = s3.Object(bucket_name, csv_file_key)
+                
+                # target_data = s3_object.get()['Body'].read() # target with lookup key
+
+                # combined_data = pd.merge(feature_df, target_data, on='customer_id')
+
+                # return combined_data
+
+                s3 = boto3.resource("s3",aws_access_key_id=aws_access_key, 
+                      aws_secret_access_key=aws_secret_key, 
+                      region_name='ap-south-1')
+                
+                bucket_name =  configure['s3']['bucket_name']
+                csv_file_key = configure['s3']['preprocessed_df_path']
+
+                s3_object = s3.Object(bucket_name, csv_file_key)
+                
+                csv_content = s3_object.get()['Body'].read()
+
+                df_input = pd.read_csv(BytesIO(csv_content))
+
+                return df_input
+                
                 
         except:
                 print("Hiii changes detected")

@@ -260,12 +260,7 @@ class DataPrep(Task):
     def _preprocess_data(self):
 
 
-        try:
-                
-                #fs.get_table(f"{configure['feature-store']['table_name']}")
-                print("reading feature store")
-                new_df = fs.read_table(configure['feature-store']['table_name'])
-                print("new_df read from feature store")
+        
                 # feature_df = new_df.toPandas()
                 # print("Feature store is already there")
 
@@ -284,22 +279,36 @@ class DataPrep(Task):
 
                 # return combined_data
 
-                s3 = boto3.resource("s3",aws_access_key_id=aws_access_key, 
-                      aws_secret_access_key=aws_secret_key, 
-                      region_name='ap-south-1')
-                
-                bucket_name =  configure['s3']['bucket_name']
-                csv_file_key = configure['s3']['preprocessed_df_path']
+        s3 = boto3.resource("s3",aws_access_key_id=aws_access_key, 
+                aws_secret_access_key=aws_secret_key, 
+                region_name='ap-south-1')
+        print("s3 client")
+        
+        bucket_name =  configure['s3']['bucket_name']
+        csv_file_key = configure['s3']['preprocessed_df_path']
 
-                s3_object = s3.Object(bucket_name, csv_file_key)
-                
-                csv_content = s3_object.get()['Body'].read()
+        print(bucket_name,csv_file_key)
 
-                df_input = pd.read_csv(BytesIO(csv_content))
+        s3_object = s3.Object(bucket_name, csv_file_key)
 
-                return df_input
+        print('s3 object')
+        
+        csv_content = s3_object.get()['Body'].read()
+
+        print('csv_constant')
+
+        df_input = pd.read_csv(BytesIO(csv_content))
+
+        print('df_input')
+
+        
                 
-                
+
+        try:
+                #fs.get_table(f"{configure['feature-store']['table_name']}")
+                print("reading feature store")
+                new_df = fs.read_table(configure['feature-store']['table_name'])
+                print("new_df read from feature store")       
         except:
                 print("Hiii changes detected")
                 print(f"Access key and secret key are {access_key} and {secret_key}")

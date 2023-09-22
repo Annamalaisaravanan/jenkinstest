@@ -11,6 +11,8 @@ with open('databricks-config.yml', 'r') as file:
 host_token = os.environ.get('token')
 aws_access = os.environ.get('aws_access_key')
 aws_secret = os.environ.get('aws_secret_key')
+c5_access  = os.environ.get('c5_access_key')
+c5_secret  = os.environ.get('c5_secret_key')
 
 def make_databricks_api_request(host_url, method, json_data='{}', headers=None, params=None):
    
@@ -46,6 +48,17 @@ headers = {
 }
 
 
+def add_secrets_to_scope(scope_name,scope_key,key_value):
+            secret_config = {
+            "scope": scope_name,
+            "key": scope_key,
+            "string_value": key_value,
+            }
+
+            secret_response = make_databricks_api_request(f"{db_yml['databricks_host']}/api/2.0/secrets/put", "POST", json.dumps(secret_config),headers)
+            print('The scope response is',secret_response)
+
+
 session = requests.Session()
 
 scopes_list =  session.get(f"{db_yml['databricks_host']}/api/2.0/secrets/scopes/list",headers=headers)
@@ -68,32 +81,39 @@ if 'anna-scope' not in scope_name:
 else:
          print(" anna-scope is already exist!! ")
 
-secret_config = {
-  "scope": "anna-scope",
-  "key": "databricks-token",
-  "string_value": host_token,
-}
 
-secret_response = make_databricks_api_request(f"{db_yml['databricks_host']}/api/2.0/secrets/put", "POST", json.dumps(secret_config),headers)
-print('The scope response is',secret_response)
+if 'feature-store-example-read' not in scope_name:
+            secret_scope_config = {
+                "scope": "feature-store-example-read",
+                "scope_backend_type": "DATABRICKS"
+                }
+            scope_response = make_databricks_api_request(f"{db_yml['databricks_host']}/api/2.0/secrets/scopes/create", "POST", json.dumps(secret_scope_config),headers)
+            print('The feature store read response is',scope_response)
 
-aws_secret1_config = {
-  "scope": "anna-scope",
-  "key": "aws_access_key",
-  "string_value": aws_access,
-}
+else:
+         print(" feature-store-example-read is already exist!! ")
 
-aws_access_response = make_databricks_api_request(f"{db_yml['databricks_host']}/api/2.0/secrets/put", "POST", json.dumps(aws_secret1_config),headers)
-print('The access scope response is',aws_access_response)
+if 'feature-store-example-write' not in scope_name:
+            secret_scope_config = {
+                "scope": "feature-store-example-write",
+                "scope_backend_type": "DATABRICKS"
+                }
+            scope_response = make_databricks_api_request(f"{db_yml['databricks_host']}/api/2.0/secrets/scopes/create", "POST", json.dumps(secret_scope_config),headers)
+            print('The feature store write response is',scope_response)
 
-
-aws_secret2_config = {
-  "scope": "anna-scope",
-  "key": "aws_secret_key",
-  "string_value": aws_secret,
-}
+else:
+         print(" feature-store-example-write is already exist!! ")
 
 
 
-aws_secret_response = make_databricks_api_request(f"{db_yml['databricks_host']}/api/2.0/secrets/put", "POST", json.dumps(aws_secret2_config),headers)
-print('The secret scope response is',aws_secret_response)
+
+add_secrets_to_scope('anna-scope',"databricks-token",host_token)
+add_secrets_to_scope('anna-scope',"aws_access_key",aws_access)
+add_secrets_to_scope('anna-scope','aws_secret_key',aws_secret)
+
+add_secrets_to_scope('feature-store-example-read','dynamo-access-key-id',c5_access)
+add_secrets_to_scope('feature-store-example-read','dynamo-secret-access-key',c5_secret)
+
+
+add_secrets_to_scope('feature-store-example-write','dynamo-access-key-id',c5_access)
+add_secrets_to_scope('feature-store-example-write','dynamo-secret-access-key',c5_secret)

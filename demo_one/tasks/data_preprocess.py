@@ -435,17 +435,19 @@ class DataPrep(Task):
 
                 print("Feature Store is created")
 
+                online_store_spec = AmazonDynamoDBSpec(
+                region="us-west-2",
+                write_secret_prefix="feature-store-example-write/dynamo",
+                read_secret_prefix="feature-store-example-read/dynamo",
+                table_name = configure['feature-store']['online_table_name']
+                )
+                
+                fs.publish_table(table_name, online_store_spec)
+
                 return df_input
                 
 
-                # online_store_spec = AmazonDynamoDBSpec(
-                # region="us-west-2",
-                # write_secret_prefix="feature-store-example-write/dynamo",
-                # read_secret_prefix="feature-store-example-read/dynamo",
-                # table_name = configure['feature-store']['online_table_name']
-                # )
                 
-                # fs.publish_table(table_name, online_store_spec)
 
                    
              

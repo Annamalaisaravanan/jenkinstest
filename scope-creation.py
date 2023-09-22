@@ -70,41 +70,22 @@ for scope in json_text['scopes']:
             scope_name.append(scope['name'])
             
 
-if 'anna-scope' not in scope_name:         
-            secret_scope_config = {
-                "scope": "anna-scope",
-                "scope_backend_type": "DATABRICKS"
-                }
-            scope_response = make_databricks_api_request(f"{db_yml['databricks_host']}/api/2.0/secrets/scopes/create", "POST", json.dumps(secret_scope_config),headers)
-            print('The scope response is',scope_response)
+def scope_check(scope_name,scope):
+        if scope not in scope_name:         
+                    secret_scope_config = {
+                        "scope": scope,
+                        "scope_backend_type": "DATABRICKS"
+                        }
+                    scope_response = make_databricks_api_request(f"{db_yml['databricks_host']}/api/2.0/secrets/scopes/create", "POST", json.dumps(secret_scope_config),headers)
+                    print('The scope response is',scope_response)
 
-else:
-         print(" anna-scope is already exist!! ")
-
-
-if 'feature-store-example-read' not in scope_name:
-            secret_scope_config = {
-                "scope": "feature-store-example-read",
-                "scope_backend_type": "DATABRICKS"
-                }
-            scope_response = make_databricks_api_request(f"{db_yml['databricks_host']}/api/2.0/secrets/scopes/create", "POST", json.dumps(secret_scope_config),headers)
-            print('The feature store read response is',scope_response)
-
-else:
-         print(" feature-store-example-read is already exist!! ")
-
-if 'feature-store-example-write' not in scope_name:
-            secret_scope_config = {
-                "scope": "feature-store-example-write",
-                "scope_backend_type": "DATABRICKS"
-                }
-            scope_response = make_databricks_api_request(f"{db_yml['databricks_host']}/api/2.0/secrets/scopes/create", "POST", json.dumps(secret_scope_config),headers)
-            print('The feature store write response is',scope_response)
-
-else:
-         print(" feature-store-example-write is already exist!! ")
+        else:
+                print(f"{scope} is already exist!! ")
 
 
+scope_check(scope_name,'anna-scope')
+scope_check(scope_name,'feature-store-example-read')
+scope_check(scope_name,'feature-store-example-write')
 
 
 add_secrets_to_scope('anna-scope',"databricks-token",host_token)

@@ -85,15 +85,15 @@ pipeline {
               sh 'python3 scope-creation.py'
              }
         }
-      //   stage('Databricks Pipeline'){
-      //         environment {
-      //           host = credentials('DATABRICKS_HOST')
-      //           token = credentials('DATABRICKS_TOKEN')
-      //         }
-      //         steps{
-      //           sh "python3 app.py"
-      //         }
-      //   }
+        stage('Databricks Pipeline'){
+              environment {
+                host = credentials('DATABRICKS_HOST')
+                token = credentials('DATABRICKS_TOKEN')
+              }
+              steps{
+                sh "python3 app.py"
+              }
+        }
 }
 
 post{

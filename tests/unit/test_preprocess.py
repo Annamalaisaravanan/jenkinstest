@@ -15,6 +15,8 @@ with open('demo_one/tasks/config.yml', 'r') as file:
 def test_preprocess(spark: SparkSession, tmp_path: Path):
     
     input_data = pd.read_csv('tests/test_df.csv')
+
+    spark = SparkSession.builder.appName("PandasToSpark").getOrCreate()
     df_input = spark.createDataFrame(input_data)
 
     # Call the preprocess function

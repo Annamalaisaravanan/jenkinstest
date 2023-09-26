@@ -16,11 +16,10 @@ def test_preprocess(spark: SparkSession, tmp_path: Path):
     
     input_data = pd.read_csv('tests/test_df.csv')
 
-    spark = SparkSession.builder.appName("PandasToSpark").getOrCreate()
-    df_input = spark.createDataFrame(input_data)
+    
 
     # Call the preprocess function
-    df_feature, df_input = preprocess(spark, configure, df_input)
+    df_feature, df_input = preprocess(spark, configure, input_data)
 
     # Convert the Spark DataFrames to Pandas DataFrames for easier comparison
     df_input_pandas = df_input.toPandas()

@@ -73,7 +73,7 @@ pipeline {
         stage('Unit Testing'){
 
             steps{
-                   withPythonEnv('/usr/bin/python3.8'){
+                   withPythonEnv('/usr/bin/python3.10'){
                         sh "pip install -r requirements.txt"
                         sh "pytest tests/unit --cov"
                    }

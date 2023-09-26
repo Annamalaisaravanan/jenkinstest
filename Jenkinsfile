@@ -75,7 +75,7 @@ pipeline {
 
             steps{
                    script{
-                        sh "pytest pytest tests/unit --cov"
+                        sh "pytest tests/unit --cov"
                    }
             }
         }

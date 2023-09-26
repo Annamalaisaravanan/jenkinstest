@@ -46,7 +46,7 @@ aws_access_key, aws_secret_key, db_token = read_secrets(dbutils,'anna-scope',['a
 class DataPrep():
     
     def load_data(self, table_name, lookup_key,target, inference_data_df):
-                    # In the FeatureLookup, if you do not provide the `feature_names` parameter, all features except primary keys are returned
+                    
                     model_feature_lookups = [FeatureLookup(table_name=table_name, lookup_key=lookup_key)]
                 
                     # fs.create_training_set looks up features in model_feature_lookups that match the primary key from inference_data_df

@@ -3,7 +3,7 @@
 # dbx
 # boto3
 mlflow
-delta
+delta-spark==1.1.0
 databricks
 databricks-sdk
 requests

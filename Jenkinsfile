@@ -91,7 +91,7 @@ pipeline {
                   //  c5_access_key = credentials('C5_ACCESS_KEY')
                   //  c5_secret_key = credentials('C5_SECRET_KEY')
 
-                   host = credentials('DATABRICKS_HOST')
+                   
                    
                    aws_secret_key= credentials('MY_AWS_SECRET_KEY')
                    

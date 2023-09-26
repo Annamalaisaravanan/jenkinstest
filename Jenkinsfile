@@ -74,8 +74,8 @@ pipeline {
 
             steps{
                    withPythonEnv('/usr/bin/python3.8'){
-                        sh '''pip install -r requirements.txt
-                              pytest tests/unit --cov'''
+                        sh "pip install -r requirements.txt"
+                        sh "pytest tests/unit --cov"
                    }
                   
             }
@@ -107,12 +107,12 @@ pipeline {
       //   }
 }
 
-post{
-     failure{
-             sh "python3 remove-scope.py"
-     }
+// post{
+//      failure{
+//              sh "python3 remove-scope.py"
+//      }
      
-}
+// }
 
 
 }

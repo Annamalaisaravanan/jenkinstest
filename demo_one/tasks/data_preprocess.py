@@ -1,66 +1,45 @@
 import pandas as pd
 import numpy as np
-from sklearn import datasets
 from demo_one.common import Task
-from sklearn.preprocessing import OrdinalEncoder, OneHotEncoder
-import warnings
-import os
+from sklearn.preprocessing import OrdinalEncoder
 import boto3
 import yaml
-import urllib
 import pickle
 from pyspark.sql import SparkSession
-from io import BytesIO
-from databricks.feature_store.online_store_spec import AmazonDynamoDBSpec
-import uuid
-
 from databricks import feature_store
 from mlflow.tracking.client import MlflowClient
-
 from sklearn.model_selection import train_test_split
-
 from sklearn.metrics import accuracy_score, confusion_matrix
-
 from databricks.feature_store import feature_table, FeatureLookup
-
-import os
-import datetime
 from pyspark.dbutils import DBUtils
-
 import mlflow
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import f1_score, r2_score, auc, roc_curve
+from sklearn.metrics import f1_score, auc, roc_curve
+from mlflow.utils.rest_utils import http_request
+import json
 
 
-
-from demo_one.utils import random_string
+from demo_one.utils import random_string, feature_store_createAndPublish
 from demo_one.utils import push_df_to_s3, mlflow_call_endpoint, read_data_from_s3, read_secrets
 
-
+import warnings
+warnings.filterwarnings('ignore')
 
 
 with open('config.yml', 'r') as file:
     configure = yaml.safe_load(file)
 
-from mlflow.utils.rest_utils import http_request
-import json
+
 
 def Client():
   return mlflow.tracking.MlflowClient()
+host_creds = Client()._tracking_client.store.get_host_creds()
 
-warnings.filterwarnings('ignore')
 
 fs = feature_store.FeatureStoreClient()
 
-host_creds = Client()._tracking_client.store.get_host_creds()
-
 spark = SparkSession.builder.appName("CSV Loading Example").getOrCreate()
-
 dbutils = DBUtils(spark)
-
-# aws_access_key = dbutils.secrets.get(scope="anna-scope", key="aws_access_key")
-# aws_secret_key = dbutils.secrets.get(scope="anna-scope", key="aws_secret_key")
-# db_token = dbutils.secrets.get(scope="anna-scope", key="databricks-token")
 
 aws_access_key, aws_secret_key, db_token = read_secrets(dbutils,'anna-scope',['aws_access_key','aws_secret_key','databricks-token'])
 
@@ -192,7 +171,7 @@ class DataPrep(Task):
         try:
                 
                 new_df = fs.read_table(configure['feature-store']['table_name'])
-
+                
                 df_input = read_data_from_s3(s3,configure['s3']['bucket_name'],configure['preprocessed']['preprocessed_df_path'])
 
                 return df_input 
@@ -244,30 +223,19 @@ class DataPrep(Task):
 
                 df_feature = df_input.drop(configure['features']['target'],axis=1)
 
-                df_spark = spark.createDataFrame(df_feature)
-
-                fs.create_table(
-                        name=table_name,
-                        primary_keys=[configure['feature-store']['lookup_key']],
-                        df=df_spark,
-                        schema=df_spark.schema,
-                        description="health features"
-                    )
                 
+
                 push_status = push_df_to_s3(df_input,configure['s3']['bucket_name'],configure['preprocessed']['preprocessed_df_path'],s3)
                 print(push_status)
 
-                print("Feature Store is created")
 
-                online_store_spec = AmazonDynamoDBSpec(
-                region="us-west-2",
-                write_secret_prefix="feature-store-example-write/dynamo",
-                read_secret_prefix="feature-store-example-read/dynamo",
-                table_name = configure['feature-store']['online_table_name']
-                )
+                #feature store function
+
+                df_spark = spark.createDataFrame(df_feature)
+
+                fs_status = feature_store_createAndPublish(fs,table_name,configure,df_spark)
+                print(f"The Feature store status: {fs_status}")
                 
-                fs.publish_table(table_name, online_store_spec)
-
                 return df_input
                 
 

@@ -7,6 +7,9 @@ import json
 from databricks.feature_store.online_store_spec import AmazonDynamoDBSpec
 from mlflow.utils.rest_utils import http_request
 
+from pyspark.sql import SparkSession
+from pyspark.dbutils import DBUtils
+
 
 def random_string(base_string):
         # Generate a random number (assuming you want a 6-digit number)
@@ -58,6 +61,10 @@ def read_secrets(dbutils,scope,keys):
 
 
 def feature_store_createAndPublish(fs,table_name,configure,df_spark):
+            
+            spark = SparkSession.builder.appName("CSV Loading Example").getOrCreate()
+            dbutils = DBUtils(spark)
+
             fs.create_table(
                         name=table_name,
                         primary_keys=[configure['feature-store']['lookup_key']],

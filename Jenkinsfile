@@ -75,7 +75,7 @@ pipeline {
 
             steps{
                   
-               sh "python -m pytest tests/unit --cov"
+               sh "python3 -m pytest tests/unit --cov"
             
                   
             }

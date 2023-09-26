@@ -16,7 +16,7 @@ c5_secret  = os.environ.get('c5_secret_key')
 
 def make_databricks_api_request(host_url, method, json_data='{}', headers=None, params=None):
    
-    # Construct the full URL for the API request
+    # Construct the full URL for the API requests
     url = f"{host_url}"
     
     # Create the request headers (if provided)

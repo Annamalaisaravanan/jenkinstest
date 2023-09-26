@@ -9,7 +9,7 @@ import pickle
 from mlflow.utils.rest_utils import http_request
 
 from pyspark.sql import SparkSession
-from pyspark.dbutils import DBUtils
+#from pyspark.dbutils import DBUtils
 
 
 def random_string(base_string):
@@ -63,8 +63,8 @@ def read_secrets(dbutils,scope,keys):
 
 def feature_store_create(fs,table_name,configure,df_spark):
             
-            spark = SparkSession.builder.appName("CSV Loading Example").getOrCreate()
-            dbutils = DBUtils(spark)
+            # spark = SparkSession.builder.appName("CSV Loading Example").getOrCreate()
+            # dbutils = DBUtils(spark)
 
             fs.create_table(
                         name=table_name,

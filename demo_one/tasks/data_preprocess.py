@@ -11,6 +11,7 @@ from mlflow.tracking.client import MlflowClient
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, confusion_matrix
 from databricks.feature_store import feature_table, FeatureLookup
+from databricks.feature_store.online_store_spec import AmazonDynamoDBSpec
 from pyspark.dbutils import DBUtils
 import mlflow
 from sklearn.linear_model import LogisticRegression
@@ -19,7 +20,7 @@ from mlflow.utils.rest_utils import http_request
 import json
 
 
-from demo_one.utils import random_string, feature_store_createAndPublish
+from demo_one.utils import random_string, feature_store_create
 from demo_one.utils import push_df_to_s3, mlflow_call_endpoint, read_data_from_s3, read_secrets
 
 import warnings
@@ -171,7 +172,7 @@ class DataPrep(Task):
         try:
                 
                 new_df = fs.read_table(configure['feature-store']['table_name'])
-                
+
                 df_input = read_data_from_s3(s3,configure['s3']['bucket_name'],configure['preprocessed']['preprocessed_df_path'])
 
                 return df_input 
@@ -233,8 +234,19 @@ class DataPrep(Task):
 
                 df_spark = spark.createDataFrame(df_feature)
 
-                fs_status = feature_store_createAndPublish(fs,table_name,configure,df_spark)
+                fs_status = feature_store_create(fs,table_name,configure,df_spark)
                 print(f"The Feature store status: {fs_status}")
+
+                online_store_spec = AmazonDynamoDBSpec(
+                    region="us-west-2",
+                    write_secret_prefix="feature-store-example-write/dynamo",
+                    read_secret_prefix="feature-store-example-read/dynamo",
+                    table_name = configure['feature-store']['online_table_name']
+                    )
+                    
+                fs.publish_table(table_name, online_store_spec)
+
+                print("Feature store published")
                 
                 return df_input
                 

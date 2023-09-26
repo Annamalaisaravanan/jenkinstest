@@ -32,7 +32,7 @@ features:
 feature-store:
              lookup_key: "PATIENT_ID"
              DB: 'pharma'
-             table_name: "pharma.demo_table2"
+             table_name: "pharma.demo_table3"
              online_table_name: "pharma_online_table"
 
 ModelTraining:

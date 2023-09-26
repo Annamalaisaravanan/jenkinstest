@@ -4,7 +4,7 @@ from io import BytesIO
 import boto3
 import pandas as pd
 import json
-from databricks.feature_store.online_store_spec import AmazonDynamoDBSpec
+
 from mlflow.utils.rest_utils import http_request
 
 from pyspark.sql import SparkSession
@@ -60,7 +60,7 @@ def read_secrets(dbutils,scope,keys):
         return h
 
 
-def feature_store_createAndPublish(fs,table_name,configure,df_spark):
+def feature_store_create(fs,table_name,configure,df_spark):
             
             spark = SparkSession.builder.appName("CSV Loading Example").getOrCreate()
             dbutils = DBUtils(spark)
@@ -75,14 +75,5 @@ def feature_store_createAndPublish(fs,table_name,configure,df_spark):
                 
             print("Feature Store is created")
 
-            online_store_spec = AmazonDynamoDBSpec(
-            region="us-west-2",
-            write_secret_prefix="feature-store-example-write/dynamo",
-            read_secret_prefix="feature-store-example-read/dynamo",
-            table_name = configure['feature-store']['online_table_name']
-            )
             
-            fs.publish_table(table_name, online_store_spec)
-
-            print("Feature store published")
             return True

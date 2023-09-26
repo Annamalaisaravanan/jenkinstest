@@ -1,10 +1,11 @@
 import random
 import string
 from io import BytesIO
-import boto3
+
+from sklearn.preprocessing import OrdinalEncoder
 import pandas as pd
 import json
-
+import pickle
 from mlflow.utils.rest_utils import http_request
 
 from pyspark.sql import SparkSession
@@ -77,3 +78,48 @@ def feature_store_create(fs,table_name,configure,df_spark):
 
             
             return True
+
+def preprocess(spark,configure,df_input):
+                numerical_cols = configure['features']['numerical_cols']
+                
+                categorical_cols = configure['features']['categorical_cols']
+
+                df_encoded = df_input.copy()
+                for col in df_encoded.select_dtypes(include=['object']):
+                    df_encoded[col] = df_encoded[col].astype('category').cat.codes
+
+                ordinal_cols = configure['features']['ordinal_cols']
+
+                # Columns for one-hot encoding
+                onehot_cols = configure['features']['onehot_cols']
+                
+                ordinal_encoder = OrdinalEncoder()
+                df_input[ordinal_cols] = ordinal_encoder.fit_transform(df_input[ordinal_cols])
+
+                onehot_encoded_data = pd.get_dummies(df_input[onehot_cols], drop_first=True)
+
+
+                df_input = pd.concat([df_input.drop(onehot_cols, axis=1), onehot_encoded_data], axis=1)
+
+                encoders_dict = {
+                        'ordinal_encoder': ordinal_encoder,
+                        # Add more encoders as needed
+                    }
+                
+                # pickled_data = pickle.dumps(encoders_dict)
+                # pkl_path = configure['preprocessed']['encoders_path']
+                
+                df_input.rename(columns = {'index':'PATIENT_ID','Height_(cm)':'Height','Weight_(kg)':'Weight',
+                'Diabetes_No, pre-diabetes or borderline diabetes':'Diabetes_No_pre-diabetes_or_borderline_diabetes',
+                'Diabetes_Yes, but female told only during pregnancy':'Diabetes_Yes_but_female_told_only_during_pregnancy'}, inplace = True)
+
+
+                spark.sql(f"CREATE DATABASE IF NOT EXISTS {configure['feature-store']['DB']}")
+                print('pharma db created')
+                # Create a unique table name for each run. This prevents errors if you run the notebook multiple times.
+                table_name = configure['feature-store']['table_name']
+                print(table_name)
+
+                df_feature = df_input.drop(configure['features']['target'],axis=1)
+
+                return df_feature, df_input

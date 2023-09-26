@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-from demo_one.common import Task
 from sklearn.preprocessing import OrdinalEncoder
 import boto3
 import yaml
@@ -16,11 +15,10 @@ from pyspark.dbutils import DBUtils
 import mlflow
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import f1_score, auc, roc_curve
-from mlflow.utils.rest_utils import http_request
 import json
 
 
-from demo_one.utils import random_string, feature_store_create
+from demo_one.utils import random_string, feature_store_create, preprocess
 from demo_one.utils import push_df_to_s3, mlflow_call_endpoint, read_data_from_s3, read_secrets
 
 import warnings
@@ -45,7 +43,7 @@ dbutils = DBUtils(spark)
 aws_access_key, aws_secret_key, db_token = read_secrets(dbutils,'anna-scope',['aws_access_key','aws_secret_key','databricks-token'])
 
 
-class DataPrep(Task):
+class DataPrep():
     
     def load_data(self, table_name, lookup_key,target, inference_data_df):
                     # In the FeatureLookup, if you do not provide the `feature_names` parameter, all features except primary keys are returned
@@ -164,6 +162,8 @@ class DataPrep(Task):
 
                 print("Webhook Created for deployment job")
 
+    
+
     def _preprocess_data(self):
 
         s3 = boto3.resource("s3",aws_access_key_id=aws_access_key, 
@@ -182,50 +182,51 @@ class DataPrep(Task):
             
                 df_input = df_input.reset_index()
         
-                numerical_cols = configure['features']['numerical_cols']
+                # numerical_cols = configure['features']['numerical_cols']
                 
-                categorical_cols = configure['features']['categorical_cols']
+                # categorical_cols = configure['features']['categorical_cols']
 
-                df_encoded = df_input.copy()
-                for col in df_encoded.select_dtypes(include=['object']):
-                    df_encoded[col] = df_encoded[col].astype('category').cat.codes
+                # df_encoded = df_input.copy()
+                # for col in df_encoded.select_dtypes(include=['object']):
+                #     df_encoded[col] = df_encoded[col].astype('category').cat.codes
 
-                ordinal_cols = configure['features']['ordinal_cols']
+                # ordinal_cols = configure['features']['ordinal_cols']
 
-                # Columns for one-hot encoding
-                onehot_cols = configure['features']['onehot_cols']
+                # # Columns for one-hot encoding
+                # onehot_cols = configure['features']['onehot_cols']
                 
-                ordinal_encoder = OrdinalEncoder()
-                df_input[ordinal_cols] = ordinal_encoder.fit_transform(df_input[ordinal_cols])
+                # ordinal_encoder = OrdinalEncoder()
+                # df_input[ordinal_cols] = ordinal_encoder.fit_transform(df_input[ordinal_cols])
 
-                onehot_encoded_data = pd.get_dummies(df_input[onehot_cols], drop_first=True)
+                # onehot_encoded_data = pd.get_dummies(df_input[onehot_cols], drop_first=True)
 
 
-                df_input = pd.concat([df_input.drop(onehot_cols, axis=1), onehot_encoded_data], axis=1)
+                # df_input = pd.concat([df_input.drop(onehot_cols, axis=1), onehot_encoded_data], axis=1)
 
-                encoders_dict = {
-                        'ordinal_encoder': ordinal_encoder,
-                        # Add more encoders as needed
-                    }
+                # encoders_dict = {
+                #         'ordinal_encoder': ordinal_encoder,
+                #         # Add more encoders as needed
+                #     }
                 
-                pickled_data = pickle.dumps(encoders_dict)
-                pkl_path = configure['preprocessed']['encoders_path']
+                # pickled_data = pickle.dumps(encoders_dict)
+                # pkl_path = configure['preprocessed']['encoders_path']
                 
-                df_input.rename(columns = {'index':'PATIENT_ID','Height_(cm)':'Height','Weight_(kg)':'Weight',
-                'Diabetes_No, pre-diabetes or borderline diabetes':'Diabetes_No_pre-diabetes_or_borderline_diabetes',
-                'Diabetes_Yes, but female told only during pregnancy':'Diabetes_Yes_but_female_told_only_during_pregnancy'}, inplace = True)
+                # df_input.rename(columns = {'index':'PATIENT_ID','Height_(cm)':'Height','Weight_(kg)':'Weight',
+                # 'Diabetes_No, pre-diabetes or borderline diabetes':'Diabetes_No_pre-diabetes_or_borderline_diabetes',
+                # 'Diabetes_Yes, but female told only during pregnancy':'Diabetes_Yes_but_female_told_only_during_pregnancy'}, inplace = True)
 
 
-                spark.sql(f"CREATE DATABASE IF NOT EXISTS {configure['feature-store']['DB']}")
-                print('pharma db created')
-                # Create a unique table name for each run. This prevents errors if you run the notebook multiple times.
-                table_name = configure['feature-store']['table_name']
-                print(table_name)
+                # spark.sql(f"CREATE DATABASE IF NOT EXISTS {configure['feature-store']['DB']}")
+                # print('pharma db created')
+                # # Create a unique table name for each run. This prevents errors if you run the notebook multiple times.
+                # table_name = configure['feature-store']['table_name']
+                # print(table_name)
 
-                df_feature = df_input.drop(configure['features']['target'],axis=1)
+                # df_feature = df_input.drop(configure['features']['target'],axis=1)
 
-                
+                df_feature, df_input = preprocess(spark,configure,df_input)
 
+            
                 push_status = push_df_to_s3(df_input,configure['s3']['bucket_name'],configure['preprocessed']['preprocessed_df_path'],s3)
                 print(push_status)
 
@@ -234,7 +235,7 @@ class DataPrep(Task):
 
                 df_spark = spark.createDataFrame(df_feature)
 
-                fs_status = feature_store_create(fs,table_name,configure,df_spark)
+                fs_status = feature_store_create(fs,configure['feature-store']['table_name'],configure,df_spark)
                 print(f"The Feature store status: {fs_status}")
 
                 online_store_spec = AmazonDynamoDBSpec(
@@ -244,7 +245,7 @@ class DataPrep(Task):
                     table_name = configure['feature-store']['online_table_name']
                     )
                     
-                fs.publish_table(table_name, online_store_spec)
+                fs.publish_table(configure['feature-store']['table_name'], online_store_spec)
 
                 print("Feature store published")
                 

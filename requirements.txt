@@ -2,7 +2,8 @@
 # plotly
 # dbx
 # boto3
-# mlflow
+mlflow
+delta
 databricks
 databricks-sdk
 requests

@@ -53,5 +53,5 @@ def read_secrets(dbutils,scope,keys):
         for key in keys:
              j = dbutils.secrets.get(scope=scope, key=key)
              h = h+ (j,)
-        return j
+        return h
 

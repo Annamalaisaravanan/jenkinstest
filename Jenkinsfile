@@ -71,29 +71,38 @@ pipeline {
                   }
         }
 
-        stage('Databricks scope creation check'){
-             environment {
-                   host = credentials('DATABRICKS_HOST')
-                   token = credentials('DATABRICKS_TOKEN')
-                   aws_access_key= credentials('MY_AWS_ACCESS_KEY')
-                   aws_secret_key= credentials('MY_AWS_SECRET_KEY')
-                   c5_access_key = credentials('C5_ACCESS_KEY')
-                   c5_secret_key = credentials('C5_SECRET_KEY')
-             }
+        stage('Unit Testing'){
 
-             steps{
-              sh 'python3 scope-creation.py'
-             }
+            steps{
+                   script{
+                        sh "pytest pytest tests/unit --cov"
+                   }
+            }
         }
-        stage('Databricks Pipeline'){
-              environment {
-                host = credentials('DATABRICKS_HOST')
-                token = credentials('DATABRICKS_TOKEN')
-              }
-              steps{
-                sh "python3 app.py"
-              }
-        }
+
+      //   stage('Databricks scope creation check'){
+      //        environment {
+      //              host = credentials('DATABRICKS_HOST')
+      //              token = credentials('DATABRICKS_TOKEN')
+      //              aws_access_key= credentials('MY_AWS_ACCESS_KEY')
+      //              aws_secret_key= credentials('MY_AWS_SECRET_KEY')
+      //              c5_access_key = credentials('C5_ACCESS_KEY')
+      //              c5_secret_key = credentials('C5_SECRET_KEY')
+      //        }
+
+      //        steps{
+      //         sh 'python3 scope-creation.py'
+      //        }
+      //   }
+      //   stage('Databricks Pipeline'){
+      //         environment {
+      //           host = credentials('DATABRICKS_HOST')
+      //           token = credentials('DATABRICKS_TOKEN')
+      //         }
+      //         steps{
+      //           sh "python3 app.py"
+      //         }
+      //   }
 }
 
 post{

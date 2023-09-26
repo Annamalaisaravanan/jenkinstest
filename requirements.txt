@@ -6,4 +6,5 @@ mlflow
 databricks
 databricks-sdk
 requests
-
+pytest
+pytest-cov

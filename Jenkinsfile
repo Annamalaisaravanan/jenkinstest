@@ -58,14 +58,7 @@
 
 pipeline {
     agent any
-    environment {
-                   host = credentials('DATABRICKS_HOST')
-                   token = credentials('DATABRICKS_TOKEN')
-                   aws_access_key= credentials('MY_AWS_ACCESS_KEY')
-                   aws_secret_key= credentials('MY_AWS_SECRET_KEY')
-                   c5_access_key = credentials('C5_ACCESS_KEY')
-                   c5_secret_key = credentials('C5_SECRET_KEY')
-             }
+    
     stages {
 
         stage('Install Dependencies'){
@@ -95,8 +88,15 @@ pipeline {
 
         stage('Databricks scope creation check'){
              
-
-             steps{
+            environment {
+                   host = credentials('DATABRICKS_HOST')
+                   token = credentials('DATABRICKS_TOKEN')
+                   aws_access_key= credentials('MY_AWS_ACCESS_KEY')
+                   aws_secret_key= credentials('MY_AWS_SECRET_KEY')
+                   c5_access_key = credentials('C5_ACCESS_KEY')
+                   c5_secret_key = credentials('C5_SECRET_KEY')
+             }
+            steps{
               sh 'python3 scope-creation.py'
              }
         }

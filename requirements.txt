@@ -3,7 +3,6 @@
 # dbx
 # boto3
 # mlflow
-pyspark
 databricks
 databricks-sdk
 requests

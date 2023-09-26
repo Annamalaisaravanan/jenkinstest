@@ -74,7 +74,7 @@ pipeline {
         stage('Unit Testing'){
 
             steps{
-                   withPythonEnv('/usr/bin/python3.10'){
+                   withPythonEnv('/home/ubuntu/sample/myenv/bin'){
                         sh "pip install -r requirements.txt"
                         sh "/var/lib/jenkins/.local/lib/python3.10/site-packages/pytest tests/unit --cov"
                    }

@@ -49,7 +49,7 @@ class DataPrep():
                     
                     model_feature_lookups = [FeatureLookup(table_name=table_name, lookup_key=lookup_key)]
                 
-                    # fs.create_training_set looks up features in model_feature_lookups that match the primary key from inference_data_df
+                    # fs.create_training_set looks up features in model_feature_lookups that match the primary key from inference_data_d
                     training_set = fs.create_training_set(inference_data_df, model_feature_lookups, label=target,exclude_columns=lookup_key)
                     training_pd = training_set.load_df().toPandas()
                 

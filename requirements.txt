@@ -1,6 +1,7 @@
 # streamlit
 #plotly
 # dbx
+pyspark
 boto3
 mlflow
 delta-spark==1.1.0

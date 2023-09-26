@@ -19,11 +19,8 @@ def test_preprocess(spark: SparkSession, tmp_path: Path):
     
 
     # Call the preprocess function
-    df_feature, df_input = preprocess(spark, configure, input_data)
+    df_feature_pandas, df_input_pandas = preprocess(spark, configure, input_data)
 
-    # Convert the Spark DataFrames to Pandas DataFrames for easier comparison
-    df_input_pandas = df_input.toPandas()
-    df_feature_pandas = df_feature.toPandas()
 
     # Check if the number of rows in the output matches the input
     assert len(df_input_pandas) == len(input_data)

@@ -1,7 +1,7 @@
 from pyspark.sql import SparkSession
 from pathlib import Path
 
-from demo_one.utils import preprocess, push_df_to_s3  # Replace with the actual module containing your preprocess function
+from demo_one.utils import preprocess, push_df_to_s3, read_data_from_s3  # Replace with the actual module containing your preprocess function
 from pyspark.sql import SparkSession
 import pandas as pd
 import yaml
@@ -17,9 +17,16 @@ aws_secret_key = os.environ.get('aws_secret_key')
 with open('demo_one/tasks/config.yml', 'r') as file:
     configure = yaml.safe_load(file)
 
+input_data = pd.read_csv('tests/test_df.csv')
+
+s3 = boto3.resource("s3",aws_access_key_id=aws_access_key, 
+                aws_secret_access_key=aws_secret_key, 
+                region_name='ap-south-1')
+
+
+
 def test_preprocess(spark: SparkSession, tmp_path: Path):
     
-    input_data = pd.read_csv('tests/test_df.csv')
 
     # Call the preprocess function
     df_feature_pandas, df_input_pandas = preprocess(spark, configure, input_data)
@@ -41,11 +48,7 @@ def test_preprocess(spark: SparkSession, tmp_path: Path):
 
 
 def test_push_df_to_s3():
-         input_data = pd.read_csv('tests/test_df.csv')
-
-         s3 = boto3.resource("s3",aws_access_key_id=aws_access_key, 
-                aws_secret_access_key=aws_secret_key, 
-                region_name='ap-south-1')
+         
 
          status = push_df_to_s3(input_data,configure['Unittest']['s3']['bucket_name'],configure['Unittest']['s3']['object_key'],s3)
 
@@ -62,9 +65,15 @@ def test_push_df_to_s3():
 
          assert configure['Unittest']['s3']['object_key'] in key_list, f"File {configure['Unittest']['s3']['object_key']} not present in S3 bucket."
                 
-         
+
+def test_read_data_from_s3():
+                
+        df = read_data_from_s3(s3,configure['Unittest']['s3']['bucket_name'], configure['Unittest']['s3']['object_key'])
+
+        assert isinstance(df, pd.DataFrame), f"Expected a Pandas DataFrame, but got {type(df)} instead."
 
 
 if __name__ == '__main__':
     test_preprocess()
     test_push_df_to_s3()
+    test_read_data_from_s3()

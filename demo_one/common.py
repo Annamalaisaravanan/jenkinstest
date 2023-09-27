@@ -12,9 +12,10 @@ def get_dbutils(
     spark: SparkSession,
 ):  # please note that this function is used in mocking by its name
     try:
-        from pyspark.dbutils import DBUtils  # noqa
+          # noqa
 
         if "dbutils" not in locals():
+            from pyspark.dbutils import DBUtils
             utils = DBUtils(spark)
             return utils
         else:

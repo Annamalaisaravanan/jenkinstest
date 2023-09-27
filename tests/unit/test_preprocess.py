@@ -9,7 +9,6 @@ import os
 import boto3
 import random
 import string
-from pyspark.dbutils import DBUtils
 from demo_one.common import get_dbutils
 
 
@@ -95,7 +94,6 @@ def test_read_secrets(spark: SparkSession, tmp_path: Path):
     access, secret = read_secrets(dbutils,'test-scope',['aws-access-key','aws-secret-key'])
     
     assert access, "Access key is empty."
-
     assert secret, "Secret key is empty."
 
 if __name__ == '__main__':

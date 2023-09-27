@@ -19,6 +19,13 @@ def test_preprocess(spark: SparkSession, tmp_path: Path):
     # Call the preprocess function
     df_feature_pandas, df_input_pandas = preprocess(spark, configure, input_data)
 
+    if 'Unnamed: 0' in df_input_pandas.columns:
+         df_input_pandas = df_input_pandas.drop('Unnamed: 0', axis=1)
+
+    # Remove the 'Unnamed: 0' column from df2
+    if 'Unnamed: 0' in df_feature_pandas.columns:
+        df_feature_pandas = df_feature_pandas.drop('Unnamed: 0', axis=1)
+
 
     # Check if the number of rows in the output matches the input
     assert len(df_input_pandas) == len(input_data)

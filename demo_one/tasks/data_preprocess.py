@@ -226,6 +226,13 @@ class DataPrep():
 
                 df_feature, df_input = preprocess(spark,configure,df_input)
 
+                if 'Unnamed: 0' in df_input.columns:
+                     df_input = df_input.drop('Unnamed: 0', axis=1)
+
+                # Remove the 'Unnamed: 0' column from df2
+                if 'Unnamed: 0' in df_feature.columns:
+                    df_feature = df_feature.drop('Unnamed: 0', axis=1)
+
             
                 push_status = push_df_to_s3(df_input,configure['s3']['bucket_name'],configure['preprocessed']['preprocessed_df_path'],s3)
                 print(push_status)

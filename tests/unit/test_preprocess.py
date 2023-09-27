@@ -56,6 +56,8 @@ def test_push_df_to_s3():
 
          my_bucket = s3_sess.Bucket(configure['Unittest']['s3']['bucket_name'])
 
+         print(my_bucket.objects.all())
+
          assert configure['Unittest']['s3']['object_key'] in my_bucket.objects.all(), f"File {configure['Unittest']['s3']['object_key']} not present in S3 bucket."
                 
          

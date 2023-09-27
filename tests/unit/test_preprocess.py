@@ -10,7 +10,7 @@ import boto3
 import random
 import string
 from demo_one.common import get_dbutils
-
+from conftest import DBUtilsFixture
 import pytest
 
 
@@ -88,7 +88,7 @@ def test_random_string():
 def test_read_secrets(spark, dbutils_fixture):
       
     
-    dbutils = locals().get('dbutils')
+    dbutils = DBUtilsFixture()
 
     print(dbutils)
 

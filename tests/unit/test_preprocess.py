@@ -1,13 +1,18 @@
 from pyspark.sql import SparkSession
 from pathlib import Path
 
-from demo_one.utils import preprocess  # Replace with the actual module containing your preprocess function
+from demo_one.utils import preprocess, push_df_to_s3  # Replace with the actual module containing your preprocess function
 from pyspark.sql import SparkSession
 import pandas as pd
 import yaml
+import os
+import boto3
 
 # spark = SparkSession.builder.appName("CSV Loading Example").getOrCreate()
 # dbutils = DBUtils(spark)
+
+aws_access_key = os.environ.get('aws_access_key')
+aws_secret_key = os.environ.get('aws_secret_key')
 
 with open('demo_one/tasks/config.yml', 'r') as file:
     configure = yaml.safe_load(file)
@@ -35,5 +40,19 @@ def test_preprocess(spark: SparkSession, tmp_path: Path):
         assert ' ' not in column_name, f"Column name '{column_name}' contains spaces."
 
 
+def test_push_df_to_s3():
+         input_data = pd.read_csv('tests/test_df.csv')
+
+         s3 = boto3.resource("s3",aws_access_key_id=aws_access_key, 
+                aws_secret_access_key=aws_secret_key, 
+                region_name='ap-south-1')
+
+         status = push_df_to_s3(input_data,configure['Unittest']['s3']['bucket_name'],configure['Unittest']['s3']['object_key'],s3)
+
+         response = s3.list_objects_v2(Bucket=configure['Unittest']['s3']['bucket_name'])
+         assert any(obj['Key'] == configure['Unittest']['s3']['object_key'] for obj in response.get('Contents', []))
+
+
 if __name__ == '__main__':
     test_preprocess()
+    test_push_df_to_s3()

@@ -60,4 +60,10 @@ deployment-pipeline:
 
 databricks-url: "https://dbc-fcfbf0b3-090c.cloud.databricks.com/"
 
+
+Unittest:
+      
+        s3:
+            bucket_name:  "unittest-mlops"
+            object_key: 'sampledf.csv'
  

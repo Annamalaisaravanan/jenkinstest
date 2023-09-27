@@ -72,6 +72,11 @@ pipeline {
         }
 
         stage('Unit Testing'){
+
+            environment {
+                  aws_access_key= credentials('MY_AWS_ACCESS_KEY')
+                  aws_secret_key= credentials('MY_AWS_SECRET_KEY')    
+            }
             steps{    
                sh "python3 -m pytest tests/unit"
             }
@@ -91,15 +96,15 @@ pipeline {
               sh 'python3 scope-creation.py'
              }
         }
-        stage('Databricks Pipeline'){
-              environment {
-                // host = credentials('DATABRICKS_HOST')
-                token = credentials('DATABRICKS_TOKEN')
-              }
-              steps{
-                sh "python3 app.py"
-              }
-        }
+        // stage('Databricks Pipeline'){
+        //       environment {
+        //         // host = credentials('DATABRICKS_HOST')
+        //         token = credentials('DATABRICKS_TOKEN')
+        //       }
+        //       steps{
+        //         sh "python3 app.py"
+        //       }
+        // }
 }
 
 post{

@@ -7,9 +7,6 @@ import pandas as pd
 import yaml
 import os
 import boto3
-import random
-import string
-from demo_one.common import get_dbutils
 from conftest import DBUtilsFixture
 import pytest
 
@@ -85,7 +82,7 @@ def test_random_string():
 
           assert exp_run_name.isalnum(), f"'{exp_run_name}' is not alphanumeric."
 
-def test_read_secrets(spark, dbutils_fixture):
+def test_read_secrets():
       
     
     dbutils = DBUtilsFixture()
@@ -95,7 +92,7 @@ def test_read_secrets(spark, dbutils_fixture):
     dbutils.store_secret('test-scope','aws-access-key','JHAVUEFTVCHJACEY')
     dbutils.store_secret('test-scope','aws-secret-key','36GFUY23GF4VR3YFVECDZRTFFFYG')
 
-    access, secret = read_secrets(dbutils_fixture,'test-scope',['aws-access-key','aws-secret-key'])
+    access, secret = read_secrets(dbutils,'test-scope',['aws-access-key','aws-secret-key'])
     
     assert access, "Access key is empty."
     assert secret, "Secret key is empty."

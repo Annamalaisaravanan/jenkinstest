@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import OrdinalEncoder
 import boto3
 import yaml
 import pickle

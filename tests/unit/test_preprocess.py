@@ -88,10 +88,10 @@ def test_random_string():
 def test_read_secrets(spark, dbutils_fixture):
       
     
-    #dbutils = get_dbutils(spark)
+    dbutils = locals().get('dbutils')
 
-    dbutils_fixture.store_secret('test-scope','aws-access-key','JHAVUEFTVCHJACEY')
-    dbutils_fixture.store_secret('test-scope','aws-secret-key','36GFUY23GF4VR3YFVECDZRTFFFYG')
+    dbutils.store_secret('test-scope','aws-access-key','JHAVUEFTVCHJACEY')
+    dbutils.store_secret('test-scope','aws-secret-key','36GFUY23GF4VR3YFVECDZRTFFFYG')
 
     access, secret = read_secrets(dbutils_fixture,'test-scope',['aws-access-key','aws-secret-key'])
     

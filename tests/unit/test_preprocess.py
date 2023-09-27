@@ -86,6 +86,7 @@ def test_random_string():
 
 def test_read_secrets(spark: SparkSession, tmp_path: Path):
       
+    spark = SparkSession.builder.getOrCreate()
     dbutils = get_dbutils(spark)
 
     dbutils.store_secret('test-scope','aws-access-key','JHAVUEFTVCHJACEY')

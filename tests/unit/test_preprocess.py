@@ -90,8 +90,6 @@ def test_read_secrets():
     dbutils.store_secret('test-scope','aws-access-key','JHAVUEFTVCHJACEY')
     dbutils.store_secret('test-scope','aws-secret-key','36GFUY23GF4VR3YFVECDZRTFFFYG')
 
-    print(dbutils.secrets1)
-
     access, secret = read_secrets(dbutils,'test-scope',['aws-access-key','aws-secret-key'])
     
     assert access, "Access key is empty."

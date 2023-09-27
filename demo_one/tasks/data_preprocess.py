@@ -242,8 +242,18 @@ class DataPrep():
 
                 df_spark = spark.createDataFrame(df_feature)
 
-                fs_status = feature_store_create(fs,configure['feature-store']['table_name'],configure,df_spark)
-                print(f"The Feature store status: {fs_status}")
+                # fs_status = feature_store_create(fs,configure['feature-store']['table_name'],configure,df_spark)
+                # print(f"The Feature store status: {fs_status}")
+
+                fs.create_table(
+                        name=configure['feature-store']['table_name'],
+                        primary_keys=[configure['feature-store']['lookup_key']],
+                        df=df_spark,
+                        schema=df_spark.schema,
+                        description="health features"
+                    )
+
+                print("Feature store created")
 
                 online_store_spec = AmazonDynamoDBSpec(
                     region="us-west-2",

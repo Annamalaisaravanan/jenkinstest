@@ -57,28 +57,11 @@ def read_secrets(dbutils,scope,keys):
         h=tuple()
         for key in keys:
              j = dbutils.secrets.get(scope=scope, key=key)
-             print(j)
              h = h+ (j,)
         return h
 
 
-def feature_store_create(fs,table_name,configure,df_spark):
-            
-            # spark = SparkSession.builder.appName("CSV Loading Example").getOrCreate()
-            # dbutils = DBUtils(spark)
 
-            fs.create_table(
-                        name=table_name,
-                        primary_keys=[configure['feature-store']['lookup_key']],
-                        df=df_spark,
-                        schema=df_spark.schema,
-                        description="health features"
-                    )
-                
-            print("Feature Store is created")
-
-            
-            return True
 
 def preprocess(spark,configure,df_input):
                 numerical_cols = configure['features']['numerical_cols']

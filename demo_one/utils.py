@@ -16,7 +16,7 @@ def random_string(base_string):
         # Generate a random number (assuming you want a 6-digit number)
         random_number = ''.join(random.choices(string.digits, k=6))
 
-        result_string = base_string + "_" + random_number
+        result_string = base_string + random_number
 
         return result_string
 

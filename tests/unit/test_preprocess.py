@@ -1,4 +1,4 @@
-from pyspark.sql import SparkSession
+
 from pathlib import Path
 
 from demo_one.utils import preprocess, push_df_to_s3, read_data_from_s3,random_string
@@ -11,6 +11,7 @@ import random
 import string
 from demo_one.common import get_dbutils
 
+import pytest
 
 
 
@@ -31,7 +32,7 @@ s3 = boto3.resource("s3",aws_access_key_id=aws_access_key,
 
 
 
-def test_preprocess(spark: SparkSession, tmp_path: Path):
+def test_preprocess(spark, tmp_path):
     
 
     # Call the preprocess function
@@ -84,15 +85,15 @@ def test_random_string():
 
           assert exp_run_name.isalnum(), f"'{exp_run_name}' is not alphanumeric."
 
-def test_read_secrets(spark: SparkSession, tmp_path: Path):
+def test_read_secrets(spark, dbutils_fixture):
       
-    spark = SparkSession.builder.getOrCreate()
-    dbutils = get_dbutils(spark)
+    
+    #dbutils = get_dbutils(spark)
 
-    dbutils.store_secret('test-scope','aws-access-key','JHAVUEFTVCHJACEY')
-    dbutils.store_secret('test-scope','aws-secret-key','36GFUY23GF4VR3YFVECDZRTFFFYG')
+    dbutils_fixture.store_secret('test-scope','aws-access-key','JHAVUEFTVCHJACEY')
+    dbutils_fixture.store_secret('test-scope','aws-secret-key','36GFUY23GF4VR3YFVECDZRTFFFYG')
 
-    access, secret = read_secrets(dbutils,'test-scope',['aws-access-key','aws-secret-key'])
+    access, secret = read_secrets(dbutils_fixture,'test-scope',['aws-access-key','aws-secret-key'])
     
     assert access, "Access key is empty."
     assert secret, "Secret key is empty."

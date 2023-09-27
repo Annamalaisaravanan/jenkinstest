@@ -88,8 +88,8 @@ def test_read_secrets(spark: SparkSession, tmp_path: Path):
       
     dbutils = get_dbutils(spark)
 
-    dbutils.store_serect('test-scope','aws-access-key','JHAVUEFTVCHJACEY')
-    dbutils.store_serect('test-scope','aws-secret-key','36GFUY23GF4VR3YFVECDZRTFFFYG')
+    dbutils.store_secret('test-scope','aws-access-key','JHAVUEFTVCHJACEY')
+    dbutils.store_secret('test-scope','aws-secret-key','36GFUY23GF4VR3YFVECDZRTFFFYG')
 
     access, secret = read_secrets(dbutils,'test-scope',['aws-access-key','aws-secret-key'])
     

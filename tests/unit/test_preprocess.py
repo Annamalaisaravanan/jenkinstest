@@ -16,8 +16,6 @@ def test_preprocess(spark: SparkSession, tmp_path: Path):
     
     input_data = pd.read_csv('tests/test_df.csv')
 
-    
-
     # Call the preprocess function
     df_feature_pandas, df_input_pandas = preprocess(spark, configure, input_data)
 
@@ -25,6 +23,10 @@ def test_preprocess(spark: SparkSession, tmp_path: Path):
     # Check if the number of rows in the output matches the input
     assert len(df_input_pandas) == len(input_data)
     assert len(df_feature_pandas) == len(input_data)
+
+    for column_name in df_input_pandas:
+        assert ' ' not in column_name, f"Column name '{column_name}' contains spaces."
+
 
 if __name__ == '__main__':
     test_preprocess()

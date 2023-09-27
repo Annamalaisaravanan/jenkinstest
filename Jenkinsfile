@@ -72,50 +72,42 @@ pipeline {
         }
 
         stage('Unit Testing'){
-
-            steps{
-                  
+            steps{    
                sh "python3 -m pytest tests/unit"
-            
-                  
             }
         }
 
-
-        
-        
-
-      //   stage('Databricks scope creation check'){
+        stage('Databricks scope creation check'){
              
-      //       environment {
-      //              host = credentials('DATABRICKS_HOST')
-      //              token = credentials('DATABRICKS_TOKEN')
-      //              aws_access_key= credentials('MY_AWS_ACCESS_KEY')
-      //              aws_secret_key= credentials('MY_AWS_SECRET_KEY')
-      //              c5_access_key = credentials('C5_ACCESS_KEY')
-      //              c5_secret_key = credentials('C5_SECRET_KEY')
-      //        }
-      //       steps{
-      //         sh 'python3 scope-creation.py'
-      //        }
-      //   }
-      //   stage('Databricks Pipeline'){
-      //         environment {
-      //           host = credentials('DATABRICKS_HOST')
-      //           token = credentials('DATABRICKS_TOKEN')
-      //         }
-      //         steps{
-      //           sh "python3 app.py"
-      //         }
-      //   }
+            environment {
+                  //  host = credentials('DATABRICKS_HOST')
+                   token = credentials('DATABRICKS_TOKEN')
+                   aws_access_key= credentials('MY_AWS_ACCESS_KEY')
+                   aws_secret_key= credentials('MY_AWS_SECRET_KEY')
+                   c5_access_key = credentials('C5_ACCESS_KEY')
+                   c5_secret_key = credentials('C5_SECRET_KEY')
+             }
+            steps{
+              sh 'python3 scope-creation.py'
+             }
+        }
+        stage('Databricks Pipeline'){
+              environment {
+                // host = credentials('DATABRICKS_HOST')
+                token = credentials('DATABRICKS_TOKEN')
+              }
+              steps{
+                sh "python3 app.py"
+              }
+        }
 }
 
-// post{
-//      failure{
-//              sh "python3 remove-scope.py"
-//      }
+post{
+     failure{
+             sh "python3 remove-scope.py"
+     }
      
-// }
+}
 
 
 }

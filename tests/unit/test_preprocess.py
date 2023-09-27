@@ -92,13 +92,13 @@ def test_read_secrets(spark, dbutils_fixture):
 
     print(dbutils)
 
-    # dbutils.store_secret('test-scope','aws-access-key','JHAVUEFTVCHJACEY')
-    # dbutils.store_secret('test-scope','aws-secret-key','36GFUY23GF4VR3YFVECDZRTFFFYG')
+    dbutils.store_secret('test-scope','aws-access-key','JHAVUEFTVCHJACEY')
+    dbutils.store_secret('test-scope','aws-secret-key','36GFUY23GF4VR3YFVECDZRTFFFYG')
 
-    # access, secret = read_secrets(dbutils_fixture,'test-scope',['aws-access-key','aws-secret-key'])
+    access, secret = read_secrets(dbutils_fixture,'test-scope',['aws-access-key','aws-secret-key'])
     
-    # assert access, "Access key is empty."
-    # assert secret, "Secret key is empty."
+    assert access, "Access key is empty."
+    assert secret, "Secret key is empty."
 
 if __name__ == '__main__':
     test_preprocess()

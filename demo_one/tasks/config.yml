@@ -66,4 +66,6 @@ Unittest:
         s3:
             bucket_name:  "unittest-mlops"
             object_key: 'sampledf.csv'
+
+        run_name: 'sample'
  

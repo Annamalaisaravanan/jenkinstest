@@ -1,12 +1,14 @@
 from pyspark.sql import SparkSession
 from pathlib import Path
 
-from demo_one.utils import preprocess, push_df_to_s3, read_data_from_s3  # Replace with the actual module containing your preprocess function
+from demo_one.utils import preprocess, push_df_to_s3, read_data_from_s3,random_string  # Replace with the actual module containing your preprocess function
 from pyspark.sql import SparkSession
 import pandas as pd
 import yaml
 import os
 import boto3
+import random
+import string
 
 # spark = SparkSession.builder.appName("CSV Loading Example").getOrCreate()
 # dbutils = DBUtils(spark)
@@ -73,7 +75,15 @@ def test_read_data_from_s3():
         assert isinstance(df, pd.DataFrame), f"Expected a Pandas DataFrame, but got {type(df)} instead."
 
 
+def test_random_string():
+         
+          exp_run_name = random_string(configure['Unittest']['run_name'])
+
+          assert exp_run_name.isalnum(), f"'{exp_run_name}' is not alphanumeric."
+
+
 if __name__ == '__main__':
     test_preprocess()
     test_push_df_to_s3()
     test_read_data_from_s3()
+    test_random_string()

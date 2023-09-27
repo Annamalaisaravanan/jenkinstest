@@ -1,17 +1,22 @@
 from pyspark.sql import SparkSession
 from pathlib import Path
 
-from demo_one.utils import preprocess, push_df_to_s3, read_data_from_s3,random_string  # Replace with the actual module containing your preprocess function
-from pyspark.sql import SparkSession
+from demo_one.utils import preprocess, push_df_to_s3, read_data_from_s3,random_string
+from demo_one.utils import read_secrets
 import pandas as pd
 import yaml
 import os
 import boto3
 import random
 import string
+from pyspark.dbutils import DBUtils
+from demo_one.common import get_dbutils
 
-# spark = SparkSession.builder.appName("CSV Loading Example").getOrCreate()
-# dbutils = DBUtils(spark)
+
+
+
+
+
 
 aws_access_key = os.environ.get('aws_access_key')
 aws_secret_key = os.environ.get('aws_secret_key')
@@ -51,7 +56,6 @@ def test_preprocess(spark: SparkSession, tmp_path: Path):
 
 def test_push_df_to_s3():
          
-
          status = push_df_to_s3(input_data,configure['Unittest']['s3']['bucket_name'],configure['Unittest']['s3']['object_key'],s3)
 
          session = boto3.Session(aws_access_key_id=aws_access_key, aws_secret_access_key=aws_secret_key)
@@ -81,6 +85,18 @@ def test_random_string():
 
           assert exp_run_name.isalnum(), f"'{exp_run_name}' is not alphanumeric."
 
+def test_read_secrets(spark: SparkSession, tmp_path: Path):
+      
+    dbutils = get_dbutils(spark)
+
+    dbutils.store_serect('test-scope','aws-access-key','JHAVUEFTVCHJACEY')
+    dbutils.store_serect('test-scope','aws-secret-key','36GFUY23GF4VR3YFVECDZRTFFFYG')
+
+    access, secret = read_secrets(dbutils,'test-scope',['aws-access-key','aws-secret-key'])
+    
+    assert access, "Access key is empty."
+
+    assert secret, "Secret key is empty."
 
 if __name__ == '__main__':
     test_preprocess()

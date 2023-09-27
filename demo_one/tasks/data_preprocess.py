@@ -27,8 +27,6 @@ warnings.filterwarnings('ignore')
 with open('config.yml', 'r') as file:
     configure = yaml.safe_load(file)
 
-
-
 def Client():
   return mlflow.tracking.MlflowClient()
 host_creds = Client()._tracking_client.store.get_host_creds()
@@ -38,6 +36,7 @@ fs = feature_store.FeatureStoreClient()
 
 spark = SparkSession.builder.appName("CSV Loading Example").getOrCreate()
 dbutils = DBUtils(spark)
+
 
 aws_access_key, aws_secret_key, db_token = read_secrets(dbutils,'anna-scope',['aws_access_key','aws_secret_key','databricks-token'])
 
@@ -136,6 +135,7 @@ class DataPrep():
         }
         js_list_res = mlflow_call_endpoint(host_creds,'registry-webhooks/list', 'GET', json.dumps(lists))
 
+
         print(js_list_res)
         if js_list_res:
               print("Webhook is already created")
@@ -157,6 +157,7 @@ class DataPrep():
 
                 job_json= json.dumps(diction)
                 js_res = mlflow_call_endpoint(host_creds,'registry-webhooks/create', 'POST', job_json)
+                
                 print(js_res)
 
                 print("Webhook Created for deployment job")

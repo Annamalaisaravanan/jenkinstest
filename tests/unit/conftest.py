@@ -36,6 +36,8 @@ class DBUtilsFixture:
 
     def __init__(self):
         self.fs = self
+        self.secrets1 = {}
+        self.config = {}
 
     def cp(self, src: str, dest: str, recurse: bool = False):
         copy_func = shutil.copytree if recurse else shutil.copy
@@ -67,6 +69,34 @@ class DBUtilsFixture:
         deletion_func = shutil.rmtree if recurse else os.remove
         deletion_func(path)
 
+    # My functions 
+    def store_secret(self, scope:str, key: str, value: str):
+        """
+        Store a secret.
+        """
+        self.secrets1[scope] = {key:value}
+
+    def secrets_get(self, scope, key):
+        """
+        Retrieve a secret from a specific scope.
+        """
+        if scope in self.secrets1 and key in self.secrets1[scope]:
+            return self.secrets1[scope][key]
+        return None
+
+    @property
+    def secrets(self):
+        """
+        Return a SecretsGetter instance.
+        """
+        return SecretsGetter(self)
+
+class SecretsGetter:
+    def __init__(self, db_utils_fixture):
+        self.db_utils_fixture = db_utils_fixture
+
+    def get(self, scope, key):
+        return self.db_utils_fixture.secrets_get(scope, key)
 
 @pytest.fixture(scope="session")
 def spark() -> SparkSession:

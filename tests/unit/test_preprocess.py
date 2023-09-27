@@ -49,8 +49,16 @@ def test_push_df_to_s3():
 
          status = push_df_to_s3(input_data,configure['Unittest']['s3']['bucket_name'],configure['Unittest']['s3']['object_key'],s3)
 
-         response = s3.list_objects_v2(Bucket=configure['Unittest']['s3']['bucket_name'])
-         assert any(obj['Key'] == configure['Unittest']['s3']['object_key'] for obj in response.get('Contents', []))
+         session = boto3.Session(aws_access_key_id=aws_access_key, aws_secret_access_key=aws_secret_key)
+
+            #Then use the session to get the resource
+         s3_sess = session.resource('s3')
+
+         my_bucket = s3_sess.Bucket(configure['Unittest']['s3']['bucket_name'])
+
+         assert configure['Unittest']['s3']['object_key'] in my_bucket.objects.all(), f"File {configure['Unittest']['s3']['object_key']} not present in S3 bucket."
+                
+         
 
 
 if __name__ == '__main__':

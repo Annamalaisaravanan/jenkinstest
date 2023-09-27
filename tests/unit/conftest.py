@@ -82,9 +82,7 @@ class DBUtilsFixture:
         if key not in self.secrets1[scope]:
             self.secrets1[scope][key] = []
 
-        # Append the value to the list of secrets for the key in the scope
-        self.secrets1[scope][key].append(value)
-
+        
     def secrets_get(self, scope, key):
         """
         Retrieve a secret from a specific scope.

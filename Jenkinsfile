@@ -78,7 +78,7 @@ pipeline {
                   aws_secret_key= credentials('MY_AWS_SECRET_KEY')    
             }
             steps{    
-               sh "python3 -m pytest tests/unit"
+               sh "python3 -m pytest tests/unit --cov"
             }
         }
 

@@ -17,7 +17,7 @@ from sklearn.metrics import f1_score, auc, roc_curve
 import json
 
 
-from demo_one.utils import random_string, feature_store_create, preprocess
+from demo_one.utils import random_string, preprocess
 from demo_one.utils import push_df_to_s3, mlflow_call_endpoint, read_data_from_s3, read_secrets
 
 import warnings

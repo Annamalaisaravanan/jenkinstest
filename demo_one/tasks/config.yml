@@ -58,7 +58,7 @@ deployment-pipeline:
              job_id: 142089649408174
 
 
-databricks-url: "https://dbc-fcfbf0b3-090c.cloud.databricks.com/"
+databricks-url: "https://dbc-e78722a2-75b4.cloud.databricks.com/"
 
 
 Unittest:

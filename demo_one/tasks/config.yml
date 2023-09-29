@@ -55,10 +55,10 @@ Model_registry_name: 'pharma_model'
 
 
 deployment-pipeline:
-             job_id: 142089649408174
+             job_id: 262256070931414
 
 
-databricks-url: "https://dbc-e78722a2-75b4.cloud.databricks.com/"
+databricks-url: "https://dbc-24cfc68d-f51d.cloud.databricks.com/"
 
 
 Unittest:

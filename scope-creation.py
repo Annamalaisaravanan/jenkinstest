@@ -66,11 +66,13 @@ print(db_yml['databricks_host'])
 json_text = json.loads(scopes_list.text)
 print(json_text)
 
+scope_name = []
 if not json_text or json_text['scopes'] :
     print("The dictionary is empty.")
+    
 else:
     print("The dictionary is not empty.")
-    scope_name = []
+    
     for scope in json_text['scopes']:
             scope_name.append(scope['name'])
 

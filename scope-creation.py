@@ -67,7 +67,7 @@ json_text = json.loads(scopes_list.text)
 print(json_text)
 
 scope_name = []
-if not json_text or json_text['scopes'] :
+if not json_text:
     print("The dictionary is empty.")
     
 else:

@@ -11,10 +11,6 @@ from conftest import DBUtilsFixture
 import pytest
 
 
-
-
-
-
 aws_access_key = os.environ.get('aws_access_key')
 aws_secret_key = os.environ.get('aws_secret_key')
 
